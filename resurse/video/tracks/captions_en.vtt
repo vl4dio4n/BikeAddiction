@@ -1,0 +1,21 @@
+WEBVTT - Bike Lanes
+
+STYLE
+::cue{
+    background-color: white;
+    color: var(--color5);
+    font-size: 15px;
+    text-align: center;
+}
+
+00:00.000 --> 00:03.000 line:1
+See how empty is the bike lane
+
+00:03.500 --> 00:06.500 line:1
+and how much traffic is on the cars' road?
+
+00:07.000 --> 00:09.500 line:1
+If so, don't be <i>stupid</i>!
+
+00:10.000 --> 00:13.000 line:1
+Travel by bike anywhere!

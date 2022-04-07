@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang = "ro">
+    <head>
+        <title>BikeAddiction</title>
+        <meta name="keywords" content="biciclete, piese biciclete, accesorii biciclete, echipamente <b>ciclism</b>"> <!-- de adaugat partea de second-hand, trasee si parteneri de excursie -->
+        <meta name="description" content="Aici poti gasi o gama larga de biciclete, piese, accesorii si echipamente destinate acestora la un pret avantajos">
+        <%- include("../fragmente/head.ejs"); %>
+
+    </head> 
+    <body>
+        <%- include("../fragmente/header.ejs") %> 
+        <main>
+            <div id="container">
+                <section id="produse">
+                    <section id="descriere-produse">
+                        <h2>Produse</h2>
+                        <div id="container-descriere-produse">
+                            <div>
+                                <p>Aici poti gasi <b>bicicleta</b> la care ai visat, indiferent de varsta sau daca esti pasionat de <i lang="en">mountain biking</i>, <b>ciclism</b> sosea sau BMX.
+                                    De asemenea sunt disponibile o gama larga de <b>piese de schimb</b> si <b>accesorii</b> pentru <b>bicicleta</b> ta oferite de cei mai cunoscuti producatori.
+                                    Cum pentru noi este important sa te simti bine atuci cand pedalezi, iti oferim si o multime de <b>echipamente</b> pentru <b>ciclism</b> din care sa
+                                    alegi, toate acestea la preturi avantajoase. 
+                                </p>
+                            </div>
+                            <div class="media-content">
+                                <video controls="controls" poster="resurse/imagini/bike-lane-poster.jpg" preload="metadata">
+                                    <source src="resurse/video/bike-lane.mp4" type="video/mp4">
+                                    <source src="resurse/video/bike-lane.ogv" type="video/ogv">
+                                    <track src="resurse/video/tracks/captions_ro.vtt" kind="captions" srclang="ro" label="Română" default>
+                                    <track src="resurse/video/tracks/captions_en.vtt" kind="captions" srclang="en" label="Engleză">
+                                </video>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="biciclete">
+                        <h3>Biciclete</h3>
+                        <p>Esti foarte aproape sa-ti gasesti bicicleta mult dorita iar acesta este locul potrivit unde sa o cauti.</p>
+                        <figure class="media-content">
+                            <figcaption><a href="biciclete.html">Biciclete</a></figcaption>
+                            <picture>
+                                <source srcset="resurse/imagini/biciclete500.jpg" media = "(max-width:500px)"/>
+                                <source srcset="resurse/imagini/biciclete1000.jpg" media = "(max-width:1000px)"/>
+                                <img src="resurse/imagini/biciclete.jpg" alt="Image not found">
+                            </picture>
+                        </figure>
+                    </section>
+                    <section id="piese">
+                        <h3>Piese</h3>
+                        <p>Este important sa iti menti bicicleta intr-o stare buna de functionare iar pentru asta este nevoie sa urmaresti starea componentelor sale. Nu ezita
+                            sa iti iei toate piesele de schimb trebuinciose pentru a-ti face bicicleta ca noua. 
+                        </p>
+                        <figure class="media-content">
+                            <figcaption><a href="piese.html">Piese pentru biciclete</a></figcaption>
+                            <picture>
+                                <source srcset="resurse/imagini/piese500.jpg" media = "(max-width:500px)"/>
+                                <source srcset="resurse/imagini/piese1000.jpg" media = "(max-width:1000px)"/>
+                                <img src="resurse/imagini/piese.jpg" alt="Image not found">
+                            </picture>
+                        </figure>
+                    </section>
+                    <section id="accesorii">
+                        <h3>Accesorii</h3>
+                        <p><i lang="en">Setup</i>-ul nu este complet daca nu ai si propriile tale ustensile pentru a-ti ingriji bicicleta. In aceasta sectiune gasesti toate accesoriile de care ai nevoie pentru bicicleta ta.</p>
+                        <figure class="media-content">
+                            <figcaption><a href="accesorii.html">Accesorii pentru biciclete</a></figcaption>
+                            <picture>
+                                <source srcset="resurse/imagini/accesorii500.jpg" media = "(max-width:500px)"/>
+                                <source srcset="resurse/imagini/accesorii1000.jpg" media = "(max-width:1000px)"/>
+                                <img src="resurse/imagini/accesorii.jpg" alt="Image not found">
+                            </picture>
+                        </figure>
+                    </section>
+                    <section id="echipamente">
+                        <h3>Echipamente</h3>
+                        <p>Sectiune destinata echipamentelor pentru ciclism.</p>
+                        <figure class="media-content">
+                            <figcaption><a href="Echipamente.html">Echipamente ciclism</a></figcaption>
+                            <picture>
+                                <source srcset="resurse/imagini/echipamente500.jpg" media = "(max-width:500px)"/>
+                                <source srcset="resurse/imagini/echipamente1000.jpg" media = "(max-width:1000px)"/>
+                                <img src="resurse/imagini/echipamente.jpg" alt="Image not found">
+                            </picture>
+                        </figure>
+                    </section>
+                </section>
+                <section id="despre-noi">
+                    <h2>Despre Noi</h2>
+                    
+                    <p>Pasiunea noastra pentru biciclete si ciclism ne-a determinat sa facem acset proiect in speranta de a-i ajuta si pe alti pasionati de acest sport. Cu toate
+                        acestea pentru noi ciclismul este mai mult decat un spimplu sport, este un stil de viata. Cine pedaleaza zilnic si nu trece zi fara sa se gandeasca macar o data la 
+                        bicicleta sa stie la ce ne referim cand spunem acest lucru.
+                    </p>
+
+                    <div id = "tabel-produse">
+                        <% for(let prod of locals.produse){ %>
+                            <p><%- prod.nume %> <%- prod.pret %></p>
+                        <% } %>  
+                    </div>
+
+                </section>
+    
+                <section id="ajutor">
+                    <div id="text-ajutor">
+                        <h2>Ajutor</h2>
+                        <p>Daca te-ai hotarat sa iti cumperi o bicicleta dar nu stii inca dupa ce criterii sa o alegi, iti racomandam aceste tuoriale. Nu uita ca oricand poti apela
+                            la sfaturile expertilor nostri care iti stau la dispozitie 24/7 sau poti chair sa ne contactezi direct folosind informatiile din zona de contact
+                        </p>
+                    </div>
+                    <div id="ifr-links">
+                        <span class="media-content"><a href="https://www.youtube.com/embed/yotOZVELSMc" target="ifr-video">Alege o bicicleta <abbr title="Mountain biking">MTB</abbr></a></span>
+                        <span class="media-content"><a href="https://www.youtube.com/embed/grmh4TZVWe8" target="ifr-video">Alege o cursiera</a></span>
+                        <span class="media-content"><a href="https://www.youtube.com/embed/fWXl7tnz04k" target="ifr-video">Alege o bicicleta <abbr title="bicycle, motocross, with X standing for cross">BMX</abbr></a></span>
+                    </div>
+                    <iframe id="ifr-video" class="media-content" name="ifr-video" src="https://www.youtube.com/embed/yotOZVELSMc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>    
+                </section>
+                <section id="intrebari">
+                    <h2>Inrebari frecvente (FAQ)</h2>
+                    <details>
+                        <summary>Pentru ajutor de specialitate la cine apelez?</summary>
+                        <p>Poti apela cu incredere la expertii nostri folosind informatiile din zona de contact.</p>
+                    </details>
+                    <details>
+                        <summary>Transportul este inclus in pretul produselor?</summary>
+                        <p>Nu. Acesta va fi afisat separat si adaugat facturii.</p>
+                    </details>
+                    <details>
+                        <summary>Daca nu sunt multumit de un produs pot sa-l returnez?</summary>
+                        <p>Bineinteles, dar in maxim 24 de ore de la primirea acestuia.</p>
+                    </details>
+                </section>
+                <section id="program">
+                    <h2>Program</h2>
+                    <div id="container-tabel">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="row">Intervale</th>
+                                    <th>Luni-Vineri</th>
+                                    <th>Sambata</th>
+                                    <th>Duminica</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Dimineata</th>
+                                    <td>8<sup>00</sup> - 13<sup>30</sup></td>
+                                    <td>10<sup>00</sup> - 12<sup>00</sup></td>
+                                    <td>Nu lucram</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Pranz</th>
+                                    <td>13<sup>30</sup> - 15<sup>00</sup> (pauza de masa)</td>
+                                    <td>12<sup>00</sup> - 14<sup>00</sup> (pauza de masa)</td>
+                                    <td>Nu lucram</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Dupa-amiaza</th>
+                                    <td>8<sup>00</sup> - 20<sup>00</sup></td>
+                                    <td>14<sup>00</sup> - 17<sup>00</sup></td>
+                                    <td>14<sup>00</sup> - 20<sup>00</sup> </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <td colspan="4">Nu ezitati sa ne vizitati. In caz ca nu este clar nu lucram in pauzele de masa.</td>
+                            </tfoot>
+                            <caption>(Programul de lucru al service-urilor noastre)</caption>
+                        </table>
+                    </div>
+                    <!-- <table>
+                        <thead>
+                            <th scope="row">Statistici</th>
+                            <th>Biciclete</th>
+                            <th>Piese</th>
+                            <th>Accesorii</th>
+                            <th>Echipamente</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Anunturi</th>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total Anunturi</th>
+                                <td colspan="4">0</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Producatori</th>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total Producatori</th>
+                                <td colspan="4">0</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Ultimul Anunt</th>
+                                <td>url</td>
+                                <td>url</td>
+                                <td>url</td>
+                                <td>url</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <th scope="row">Produse Vandute</th>
+                            <td colspan="4">0</td>
+                        </tfoot>
+                        <caption>(Programul de lucru al service-urilor noastre)</caption>
+                    </table> -->
+                </section>
+                <section id ="calendar">
+                    <h2>Calendar</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea, minus. Saepe blanditiis, consequuntur tempora, pariatur eum, culpa nobis labore porro magnam iure eius. Porro in aspernatur autem alias repellendus dolorum.</p>
+                </section>
+                <section id="utilizatori-online">
+                    <h2>Utilizatori Online</h2>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum maxime repellat dolorum optio! Natus voluptatem autem aliquid provident temporibus tempore repellat, illo quis totam est animi ut cupiditate, labore mollitia?</p>
+                </section>
+                <section id="statistici">
+                    <h2>Statistici</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum numquam ab id expedita, quaerat voluptas quisquam perspiciatis maiores dolorem dignissimos? Libero, doloribus ullam. Libero molestias reprehenderit corrupti beatae deserunt ipsum!</p>
+                </section>
+                <section id="date-site">
+                    <h2>Date despre site si server</h2>
+                    <p><%- locals.ip %></p>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam dolorum officia veniam repellat minus aut, quam officiis est eius ducimus rerum voluptatem corporis nesciunt consectetur ea voluptatibus omnis aliquam? Alias!</p>
+                </section>
+            </div>
+            <section id="banner">
+                <div>
+                    <p>Acesta este un proiect scolar.</p>
+                </div>
+            </section>
+            <div id="watermark">
+                <p>Birsan</p>
+                <p>Vlad Ioan</p>
+            </div>
+        </main>
+        <%- include("../fragmente/footer.ejs") %> 
+    </body>
+</html>

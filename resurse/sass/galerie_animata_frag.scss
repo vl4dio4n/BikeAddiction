@@ -1,0 +1,103 @@
+@use "sass:math";
+
+// $transformare_i: skewX(0deg) !default;
+// $transformare_f: skewY(90deg) !default;
+$nr_imag: 6 !default;
+
+#galerie-animata h2 {
+	text-align: center;
+	padding: 20px;
+	padding-bottom: 35px;
+	color: var(--color3);
+}
+
+#galerie-animata div {
+	width: 400px;
+	height: 300px;
+	margin: 0 auto;
+	border: 5px solid transparent;
+	border-image: url("../imagini/altele/border.jpg") 30 stretch;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+}
+
+#galerie-animata figcaption {
+	position: absolute;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, 0.7);
+	width: 100%;
+	text-align: center;
+}
+
+#galerie-animata figure {
+	// position: relative;
+	width: 400px;
+	height: 300px;
+}
+
+#galerie-animata img {
+	width: 100%;
+	height: 100%;
+}
+
+#galerie-animata figure {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 0;
+	animation-name: animatie-galerie;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-fill-mode: forwards;
+	animation-duration: $nr_imag * 4.5s;
+	transform-origin: center center;
+}
+
+#galerie-animata div:hover figure {
+	animation-play-state: paused;
+}
+
+@for $i from 0 to $nr_imag {
+	#galerie-animata figure:nth-of-type(#{$nr_imag - $i}) {
+		animation-delay: $i * 4.5s;
+	}
+}
+
+$p: math.div(100%, $nr_imag);
+
+@keyframes animatie-galerie {
+	0% {
+		z-index: 10;
+		opacity: 1;
+		clip-path: polygon(0 100%, 0 100%, 0 0, 100% 0, 100% 100%, 0% 100%, 100% 0%, 100% 0, 100% 0);
+	}
+	#{math.div($p, 1.5)} {
+		opacity: 1;
+	}
+	#{$p} {
+		z-index: 10;
+		opacity: 0;
+		clip-path: polygon(0 0%, 0 100%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%, 100% 0, 0% 0);
+	}
+	#{$p + 0.00001%} {
+		z-index: -10;
+	}
+	#{100% - $p} {
+		opacity: 0;
+		z-index: -10;
+	}
+	#{100% - $p + 0.00001%} {
+		z-index: 0;
+	}
+	100% {
+		opacity: 1;
+		z-index: 0;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	#galerie-animata {
+		display: none;
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"cale_baza": "resurse/imagini/erori",
+	"erori": [
+		{
+			"identificator": 404,
+			"status": true,
+			"titlu": "Eroare 404",
+			"text": "404 - Page not found",
+			"imagine": "lupa.png",
+			"icon": "fas fa-search-minus"
+		},
+		{
+			"identificator": 403,
+			"status": true,
+			"titlu": "Eroare 403",
+			"text": "Permission denied",
+			"imagine": "interzis.png",
+			"icon": "fas fa-ban"
+		},
+		{
+			"identificator": 1,
+			"status": false,
+			"titlu": "Site în lucru",
+			"text": "Muncim, muncim!",
+			"imagine": "interzis.png",
+			"icon": "fas fa-ban"
+		}
+	]
+}

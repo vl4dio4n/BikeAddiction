@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html  lang="ro">
+    <head>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        
+        <title>BikeAddiction - <%- locals.prod.nume %></title>
+        <%- include("../fragmente/head") %>     
+        <link href="/resurse/css/pagina-produs.css" type="text/css" rel="stylesheet" />
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+        <section id="art-produs">
+                <article>
+                    <h2><span class="nume"><%- locals.prod.nume %></span></h2>
+
+                    <div class="container-produs">
+                        <table class="tabel-produs">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="celula-tabel-produs"><%- locals.prod.nume %></td>
+                                </tr>                            
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Pret</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.pret %> (lei)</td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Autor anunt</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.autor_anunt %></td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Data adaugare</th>
+                                    <% 
+                                    let data = new Date(locals.prod.data_adaugare);
+                                    let zile = ["Duminica", "Luni", "Marti", "Miercuri", "Joi", "Vineri", "Sambata"];
+                                    let luni = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+                                    let dataAfisata = `${data.getDate()} ${luni[data.getMonth()]} ${data.getFullYear()} (${zile[data.getDay()]})`
+                                     %> 
+                                    <td class="celula-tabel-produs"> <time datetime="<%- locals.prod.data_adaugare %>"><%- dataAfisata %></time></td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Anul fabricarii</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.an_fabricatie %></td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Producator</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.producator %></td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Specificaii</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.specificatii %></td>
+                                </tr>
+                                <tr>
+                                    <th scope = "row" class="celula-tabel-produs">Livrare inclusa</th>
+                                    <td class="celula-tabel-produs"><%- locals.prod.livrare ? "Da": "Nu" %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <figure class="imag-produs">
+                            <img  src="/resurse/imagini/produse/resized/<%- locals.prod.imagine %>" alt="[imagine <%- locals.prod.nume %>]" />
+                        </figure>
+                        <div class="descriere-produs">
+                            <h3>Descriere</h3>
+                            <p><%- locals.prod.descriere %></p>
+                        </div>
+                        <div class="categorie-produs">
+                            <p> <span style="font-weight: bold;">Categorii: </span> 
+                                <span class="tag-produs"><%- locals.prod.categ_produse %></span> 
+                                <%- locals.prod.categ_biciclete ? `<span class="tag-produs">${locals.prod.categ_biciclete}<span>` : ""%>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+        </section>
+    </main>
+
+    <%- include("../fragmente/footer") %>
+    </body>
+</html>

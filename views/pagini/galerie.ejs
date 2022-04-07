@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang = "ro">
+    <head>
+        <title>Galerie</title>
+        <meta name="keywords" content="galerie, imagini, biciclete">
+        <meta name="description" content="Galerii de imagini cu biciclete">
+        <link rel="stylesheet" href="resurse/css/galerie-statica.css" type="text/css">
+        <link rel="stylesheet" href="resurse/css/galerie-animata.css" type="text/css">
+        <%- include("../fragmente/head.ejs"); %>
+
+    </head> 
+    <body>
+        <%- include("../fragmente/header.ejs") %> 
+        <main>
+            <section id="galerie-statica">
+                <h2>Galerie statica</h2>
+                <div>
+                    <% for(let imag of locals.imagini_static){ %>
+                        <figure class="media-content">
+                            <picture>
+                                <source srcset="<%- imag.mic %>" media="(max-width:800px)">
+                                <source srcset="<%- imag.mediu %>" media="(max-width:1200px)">
+                                <img src="<%- imag.mare %>" alt="<%- imag.alt %>" title="<%- imag.descriere %>">
+                            </picture>
+                            <figcaption><%- imag.titlu %> </figcaption>
+                        </figure>
+                    <%} %>
+                </div>
+            </section>
+            <section id="galerie-animata">
+                <h2>Galerie animata</h2>
+                <div>
+                    <% for(let imag of locals.imagini_animat){ %>
+                        <figure class="media-content">
+                            <picture>
+                                <source srcset="<%- imag.mic %>" media="(max-width:800px)">
+                                <source srcset="<%- imag.mediu %>" media="(max-width:1200px)">
+                                <img src="<%- imag.mare %>" alt="<%- imag.alt %>" title="<%- imag.descriere %>">
+                            </picture>
+                            <figcaption><%- imag.titlu %> </figcaption>
+                        </figure>
+                    <%} %>
+                </div>
+            </section>
+        </main>
+        <%- include("../fragmente/footer.ejs") %> 
+    </body>
+</html>

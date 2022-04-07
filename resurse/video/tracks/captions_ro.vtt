@@ -1,0 +1,21 @@
+WEBVTT - Bike Lanes
+
+STYLE
+::cue{
+    background-color: white;
+    color: var(--color5);
+    font-size: 15px;
+    text-align: center;
+}
+
+00:00.000 --> 00:03.000 line:1
+Observati ce libera este pista pentru biciclete
+
+00:03.500 --> 00:06.500 line:1
+si ce aglomerat este pentru masini
+
+00:07.000 --> 00:09.500 line:1
+Daca da, nu fi <i>fraier</i>!
+
+00:10.000 --> 00:13.000 line:1
+Mergi cu bicicleta oriunde!

@@ -1,0 +1,333 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+html {
+	font-size: 20px;
+	font-family: "Hind Siliguri", sans-serif;
+	--inaltime-buton: 2.5em;
+	--inaltime-buton-top: 3em;
+	--inaltime-meniu: 2.5em;
+}
+body {
+	--color1: #ada6ad;
+	--color2: #6e696e;
+	--color3: #212021;
+	--color4: #333133;
+	--color5: #302e30;
+	--color6: #8ef725;
+	--color7: #171716;
+	--color8: #f5ff64;
+	--color9: #478f00;
+	--color6-alpha: rgba(142, 247, 37, 0.7);
+	--culoare-marcaj: rgba(51, 49, 51, 0.3);
+	--margine-main: 2em;
+	--margine-mare: 3em;
+	--margine-section: 1em;
+	--padding-main: 1em;
+	--padding-header: 0.75em;
+	--padding-section: 15px;
+	--ifr-width: 560px;
+	--ifr-height: 315px;
+	--mod-afisare-pagina: grid;
+}
+body {
+	background-color: var(--color3);
+}
+main {
+	background-color: var(--color4);
+	margin-left: var(--margine-main);
+	margin-right: var(--margine-main);
+	border-radius: 10px;
+	padding: var(--padding-main);
+}
+h1 {
+	color: var(--color6);
+	margin: var(--margine-section);
+}
+
+section {
+	border: 2px solid var(--color6);
+	padding: var(--padding-section);
+	margin: var(--margine-section);
+	border-radius: 10px;
+	background-color: var(--color1);
+	font-size: 1em;
+}
+
+#text-ajutor {
+	margin-bottom: 1em;
+}
+
+#container {
+	display: var(--mod-afisare-pagina);
+	grid-template-areas:
+		"z-despre-noi z-despre-noi z-despre-noi z-despre-noi"
+		"z-utilizatori-online z-statistici z-statistici z-date-site"
+		"z-calendar z-calendar z-program z-program"
+		"z-anunturi z-anunturi z-program z-program"
+		"z-produse z-produse z-produse z-produse"
+		"z-ajutor z-ajutor z-intrebari z-intrebari";
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+#despre-noi {
+	/*zona 1*/
+	grid-area: z-despre-noi;
+}
+#produse {
+	/*zona 8*/
+	grid-area: z-produse;
+	display: var(--mod-afisare-pagina);
+	background-color: var(--color4);
+	padding: 0;
+	border: 0;
+	grid-template-areas:
+		"z-descriere-produse z-descriere-produse"
+		"z-biciclete z-piese"
+		"z-accesorii z-echipamente";
+}
+#ajutor {
+	grid-area: z-ajutor;
+	text-align: center;
+}
+#intrebari {
+	grid-area: z-intrebari;
+}
+#program {
+	/* zona 2 */
+	grid-area: z-program;
+	text-align: center;
+}
+#calendar {
+	/* zona 3*/
+	grid-area: z-calendar;
+}
+#anunturi {
+	/* zona 4 */
+	grid-area: z-anunturi;
+}
+#utilizatori-online {
+	/* zona 5 */
+	grid-area: z-utilizatori-online;
+}
+#statistici {
+	/* zona 6 */
+	grid-area: z-statistici;
+}
+#date-site {
+	/* zona 7 */
+	grid-area: z-date-site;
+}
+#biciclete {
+	grid-area: z-biciclete;
+}
+#piese {
+	grid-area: z-piese;
+}
+#accesorii {
+	grid-area: z-accesorii;
+}
+#echipamente {
+	grid-area: z-echipamente;
+}
+#descriere-produse {
+	grid-area: z-descriere-produse;
+}
+#descriere-produse video {
+	width: 90%;
+	height: auto;
+	border: 2px solid var(--color6);
+}
+#container-descriere-produse {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+#container-descriere-produse div {
+	width: 50%;
+}
+
+#banner,
+#watermark {
+	display: none;
+}
+
+/***************** footer *************************/
+footer {
+	display: grid;
+	grid-template-areas:
+		"z-contact z-informatii"
+		"z-copyright z-copyright";
+}
+#contact {
+	grid-area: z-contact;
+	margin-left: var(--margine-main);
+}
+#informatii {
+	grid-area: z-informatii;
+}
+#copyright {
+	grid-area: z-copyright;
+	padding: 0;
+	margin: 0;
+}
+.sectiune-footer {
+	background-color: var(--color3);
+	border: 0;
+	color: var(--color6);
+	font-size: 0.7em;
+}
+address span {
+	color: var(--color6);
+	font-size: 1.2em;
+	margin: 0.5em;
+}
+
+#informatii ul {
+	padding: 0;
+	margin: 0;
+}
+#informatii ul li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	margin-top: 0.2em;
+}
+#informatii ul li a {
+	text-decoration: none;
+	font-weight: bold;
+	color: var(--color6);
+}
+p small {
+	margin: var(--margine-mare);
+	color: var(--color6);
+	font-size: small;
+}
+
+#link-top {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	opacity: 0.5;
+
+	bottom: 0;
+	right: 0;
+	width: var(--inaltime-buton);
+	height: var(--inaltime-buton);
+	background-color: transparent;
+	border-radius: 100%;
+	border: 3px solid var(--color6);
+	box-shadow: 0px 0px 7px 4px var(--color9);
+	overflow: visible;
+	text-decoration: none;
+	transition: all 0.3s linear;
+}
+#link-top:hover {
+	opacity: 1;
+	background-color: var(--color7);
+}
+#triunghi {
+	text-shadow: var(--color6) 0px 0px 10px;
+	font-size: 1.5em;
+	color: var(--color6);
+	text-align: center;
+	justify-content: center;
+}
+
+/************************ iframe *****************************/
+
+#ifr-links {
+	display: flex;
+	flex-direction: row;
+	column-gap: 0.8em;
+	justify-content: center;
+}
+
+#ifr-links span {
+	border: 3px solid var(--color3);
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	background-color: var(--color6);
+	box-shadow: 0 0 10px var(--color3);
+	width: 25%;
+	line-height: 0.7em;
+	padding: 10px;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	transition: background-color 0.3s linear;
+}
+
+#ifr-links span:hover {
+	background-color: var(--color8);
+}
+
+#ifr-links span a {
+	text-decoration: none;
+	color: black;
+	font-size: 0.7em;
+	font-weight: bold;
+}
+
+#ifr-video {
+	border: 2px solid var(--color6);
+	width: var(--ifr-width);
+	height: var(--ifr-height);
+}
+
+#eroare {
+	text-align: center;
+}
+#heading-eroare {
+	font-size: 2.5rem;
+}
+#text-eroare {
+	color: var(--color6);
+}
+
+#sectiune-contact {
+	text-align: center;
+}
+#sectiune-contact > h2 {
+	padding-top: var(--padding-main);
+	padding-bottom: var(--padding-main);
+	color: var(--color6);
+}
+#sectiune-contact > ul > li > div {
+	font-size: 1.1em;
+}
+#sectiune-contact li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+#sectiune-contact li a {
+	text-decoration: none;
+	color: black;
+	transition: all 0.3s linear;
+	padding: 0;
+	margin: 0;
+}
+#sectiune-contact > ul > li > ul > li > a:hover {
+	color: var(--color6);
+}
+
+@media screen and (max-width: 750px) {
+	body {
+		--mod-afisare-pagina: block;
+		--ifr-width: 85%;
+		--ifr-height: auto;
+	}
+	section {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+	html {
+		font-size: 17px;
+	}
+	@media screen and (max-width: 500px) {
+		html {
+			font-size: 15px;
+		}
+	}
+}

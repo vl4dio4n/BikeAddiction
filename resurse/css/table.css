@@ -1,0 +1,51 @@
+#program > h2 {
+	padding-bottom: var(--padding-header);
+}
+
+#program table {
+	margin-left: auto;
+	margin-right: auto;
+	border-spacing: 0;
+	border: 5px solid var(--color5);
+	border-style: inset;
+}
+#program td,
+#program th {
+	border: 1px solid var(--color5);
+	text-align: center;
+}
+
+#program caption {
+	caption-side: bottom;
+}
+
+#program thead th,
+#program tfoot td {
+	border-top: 1px solid var(--color5);
+	border-bottom: 1px solid var(--color6);
+}
+
+#program tbody tr:nth-child(2n) > td,
+#program tbody tr:nth-child(2n) > th {
+	border-top: 1px solid var(--color5);
+	border-bottom: 1px solid var(--color6);
+}
+#program tbody tr:nth-child(2n + 1) > td,
+#program tbody tr:nth-child(2n + 1) > th {
+	border-top: 1px solid var(--color6);
+	border-bottom: 1px solid var(--color5);
+}
+
+#program tr:nth-child(n) {
+	transition: all 0.5s linear;
+}
+
+#program tr:nth-child(n):hover {
+	outline: 5px solid var(--color6-alpha);
+}
+
+@media screen and (max-width: 750px) {
+	#container-tabel {
+		overflow-x: scroll;
+	}
+}

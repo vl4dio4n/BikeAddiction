@@ -1,0 +1,103 @@
+{
+	"cale_galerie": "resurse/imagini/galerie",
+	"imagini": [
+		{
+			"cale_fisier": "mare/snow1.webp",
+			"titlu": "Cursiera pe zapada",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Cursiera pe zapada"
+		},
+		{
+			"cale_fisier": "mare/snow2.webp",
+			"titlu": "Pe drumuri de munte",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Pe drumuri de munte"
+		},
+		{
+			"cale_fisier": "mare/snow3.webp",
+			"titlu": "Sprijinind copacul",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Sprijinind copacul"
+		},
+		{
+			"cale_fisier": "mare/snow4.webp",
+			"titlu": "Cineva s-a impotmolit",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Cineva s-a impotmolit"
+		},
+		{
+			"cale_fisier": "mare/snow5.webp",
+			"titlu": "Bicicleta ratacita in padure",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Bicicleta ratacita in padure"
+		},
+		{
+			"cale_fisier": "mare/snow6.webp",
+			"titlu": "Drum anevoios",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Drum anevoios"
+		},
+		{
+			"cale_fisier": "mare/snow7.webp",
+			"titlu": "Perfectiunea",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie"],
+			"descriere": "Perfectiunea"
+		},
+		{
+			"cale_fisier": "mare/road1.webp",
+			"titlu": "Cursiera care se odihneste",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "Cursiera care se odihneste"
+		},
+		{
+			"cale_fisier": "mare/road2.webp",
+			"titlu": "Cursiera mov",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "Cursiera mov"
+		},
+		{
+			"cale_fisier": "mare/forest1.webp",
+			"titlu": "MTB in padure",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "MTB in padure"
+		},
+		{
+			"cale_fisier": "mare/forest2.webp",
+			"titlu": "Bicicleta ursului",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "Bicicleta ursului"
+		},
+		{
+			"cale_fisier": "mare/beach1.webp",
+			"titlu": "Bicicleta care se bronzeaza",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "Bicicleta care se bronzeaza"
+		},
+		{
+			"cale_fisier": "mare/beach2.webp",
+			"titlu": "Intalnire romantica pe malul marii",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "Intalnire romantica pe malul marii"
+		},
+		{
+			"cale_fisier": "mare/bmx.webp",
+			"titlu": "BMX in echilibru",
+			"alt": "Couldn't load image",
+			"luni": ["noiembrie", "decembrie", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie"],
+			"descriere": "BMX in echilibru"
+		}
+	]
+}
