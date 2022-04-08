@@ -87,15 +87,10 @@ INSERT INTO produse(nume, descriere, pret, an_fabricatie, categ_produse, specifi
 199.00, 2021, 'echipamente', '{"rosu", "M"}', 'manusi1.png', 'vl4dio4n', 'Fox', False),
 
 ('MANUSI SPECIALIZED SOFTSHELL', 'Tehnologie 100g Primaloft insulation',
-249.00, 2020, 'echipamente', '{"negru", "XXL"}', 'manusi2.png', 'vl4dio4n', 'Specialized', True);
+249.00, 2020, 'echipamente', '{"negru", "XXL"}', 'manusi2.png', 'vl4dio4n', 'Specialized', True),
 
-
-
-
-
-
-
-
+('PANTOFI CICLISM SPECIALIZED 2FO ROOST', 'Pantofi foarte smecheri',
+548.99, 2015, 'echipamente', '{"negru", "40"}', 'pantofi1.png', 'popastefan', 'Specialized', False);
 
 
 

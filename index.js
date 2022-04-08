@@ -32,6 +32,37 @@ app.get(["/", "/index", "/home"], function (req, res) {
 });
 
 app.get("/produse", function (req, res) {
+	client.query("select distinct autor_anunt from produse", function (err, users) {
+		res.locals.users = users.rows;
+	});
+	client.query("select distinct producator from produse", function (err, producatori) {
+		res.locals.producatori = producatori.rows;
+	});
+
+	client.query("select distinct specificatii from produse", function (err, specificatii) {
+		console.log(specificatii);
+		specificatiiArr = [];
+		for (let obj of specificatii.rows) {
+			for (let specificatie of obj.specificatii) {
+				if (!specificatiiArr.includes(specificatie)) specificatiiArr.push(specificatie);
+			}
+		}
+		console.log(specificatiiArr);
+		res.locals.specificatii = specificatiiArr;
+	});
+
+	client.query("select min(an_fabricatie) from produse", function (err, an_minim) {
+		res.locals.an_minim = parseInt(an_minim.rows[0].min);
+	});
+
+	client.query("select min(pret) from produse", function (err, pret_minim) {
+		res.locals.pret_minim = parseFloat(pret_minim.rows[0].min);
+	});
+
+	client.query("select max(pret) from produse", function (err, pret_maxim) {
+		res.locals.pret_maxim = parseFloat(pret_maxim.rows[0].max);
+	});
+
 	client.query("select * from unnest(enum_range(null::categ_produse))", function (err, rezCateg) {
 		var condWhere = req.query.tip ? `categ_produse='${req.query.tip}'` : "1=1";
 		console.log(condWhere);

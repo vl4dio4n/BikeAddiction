@@ -14,7 +14,6 @@
 
     <main>
         <label> Nume: <input type="text" id="input-nume"></label>
-        <!--<label> Maxim calorii: <input type="number" id="inp-calorii" value="10000"></label>-->
         <div> Livrare inclusa:
             <label>Da
                 <input id="input-rad1" name="gr-rad" value="Da" type="radio"/>
@@ -29,21 +28,57 @@
 
 
         <% let currentYear = (new Date()).getFullYear() %> 
-        <label> An fabricatie minim: <span>(2000)</span> <input type="range" id="input-an-fabricatie" value="<%- currentYear %>" min="2000" max="<%- currentYear %>"> <span id="infoRange">(<%- currentYear %>)</span></label> </br>
+        <label> An fabricatie minim: <span>(<%- locals.an_minim %> )</span> <input type="range" id="input-an-fabricatie" value="<%- locals.an_minim %>" min="<%- locals.an_minim %>" max="<%- currentYear %>"> <span id="infoRangeAn">(<%- currentYear %>)</span></label> </br>
         
+        <label> Pret minim: <span>(<%- locals.pret_minim %>)</span> <input type="range" id="input-pret" value="<%- locals.pret_minim %>" min="<%- locals.pret_minim %>" max="<%- locals.pret_maxim %>"> <span id="infoRangePret">(<%- locals.pret_minim %>)</span></label> </br>
+
         <label>Categorie produse:
-            <select id="input-categ-produse">
-                <option id="select-toate" selected value="toate">toate</option>
+            <select id="input-categ-produse" multiple size="<%- Math.min(locals.optiuni.length + 1, 10) %> ">
+                <option id="select-multiplu-toate" selected value="toate">toate</option>
                 <% for (let opt of locals.optiuni) { %>
                     <option value="<%- opt.unnest %>"><%- opt.unnest %> </option>
                 <% } %>
             </select>
+        </label> </br>
+
+        <label>Autor anunt:
+            <input list="id-datalist" id="input-autor-anunt">
+            <datalist id="id-datalist">
+                <% for (let userObj of locals.users) { %>
+                    <option value="<%- userObj.autor_anunt %>"></option>
+                <%}  %> 
+            </datalist>
+        </label> </br>
+
+        <div>
+            <p>Producatori:</p>
+            <label>Toti producatorii
+                <input id="check-toate" checked name="gr-check" value="Toti" type="checkbox"/>
+            </label> </br>
+            <% for(let producatorObj of locals.producatori){%>
+                <label><%- producatorObj.producator %>
+                    <input id="input-check<%- locals.producatori.indexOf(producatorObj.producator) %>" checked name="gr-check" value="<%- producatorObj.producator %>" type="checkbox"/>
+                </label> </br>
+            <%} %> 
+        </div> 
+
+        <label>Specificatii: 
+            <select id="input-specificatii">
+                <option id="select-toate" value="toate">Toate</option> 
+                <% for(let opt of locals.specificatii) {%>
+                    <option value="<%- opt %>"><%- opt %></option>
+                <% } %> 
+            </select>
+        </label> </br>
+
+        <label>Cuvinte cheie:
+            <textarea id="input-keywords" cols="50" rows="5" placeholder="Introduceti cuvinte cheie"></textarea>
         </label>
+
         <p>
-        <button id="filtrare">Filtreaza</button> <button id="resetare">Reseteaza</button><br/>
-        <button id="sortCrescNume">Sorteaza crescator dupa nume si pret</button>
-        <button id="sortDescrescNume">Sorteaza descrescator dupa nume si pret</button>
-        
+            <button id="filtrare">Filtreaza</button> <button id="resetare">Reseteaza</button><br/>
+            <button id="sortCrescNume">Sorteaza crescator dupa nume si pret</button>
+            <button id="sortDescrescNume">Sorteaza descrescator dupa nume si pret</button>
         </p>
 
         <p id="p-suma">Apăsați Alt+"c" pentru suma preturilor produselor afișate. </p>
@@ -56,9 +91,12 @@
                     <h3 class="nume">Nume: <a href="/produs/<%-prod.id %>" ><span class="val-nume"><%- prod.nume%></span></a></h3>
                     <div class="info-produs">
                         <p class="pret">Pret: <span class="val-pret"><%- prod.pret%></span></p>
-                        <p class="descriere">Autor anunt: <span class="val-descriere"><%- prod.autor_anunt%></span></p>
+                        <p class="autor-anunt">Autor anunt: <span class="val-autor-anunt"><%- prod.autor_anunt%></span></p>
+                        <p class="producator">Producator: <span class="val-producator"><%- prod.producator%></span></p>
                         <p class="an-fabricatie">An fabricatie: <span class="val-an-fabricatie"><%- prod.an_fabricatie%></span></p>
                         <p class="livrare">Livrare inclusa: <span class="val-livrare"><%- prod.livrare ? "Da": "Nu" %></span></p>
+                        <p class="descriere" style="display: none;">Descriere: <span class="val-descriere"><%- prod.descriere%></span></p>
+                        <p class="specificatii" style="display: none;">Specificatii: <span class="val-specificatii"><%- prod.specificatii%></span></p>
                     </div>
                     <p class="categ-produse">Categorie: <span class="val-categ-produse"><%- prod.categ_produse%></span></p>
                     <figure>

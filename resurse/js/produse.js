@@ -1,6 +1,19 @@
 window.onload = function () {
 	document.getElementById("input-an-fabricatie").onchange = function () {
-		document.getElementById("infoRange").innerHTML = ` (${this.value})`;
+		document.getElementById("infoRangeAn").innerHTML = ` (${this.value})`;
+	};
+	document.getElementById("input-pret").onchange = function () {
+		document.getElementById("infoRangePret").innerHTML = ` (${this.value})`;
+	};
+
+	for (let chk of document.getElementsByName("gr-check"))
+		chk.onchange = function () {
+			if (chk.checked == false) document.getElementById("check-toate").checked = false;
+		};
+
+	document.getElementById("check-toate").onchange = function () {
+		var checkboxes = document.getElementsByName("gr-check");
+		for (let chk of checkboxes) chk.checked = this.checked;
 	};
 
 	document.getElementById("filtrare").onclick = function () {
@@ -14,42 +27,27 @@ window.onload = function () {
 			}
 
 		var valAnFabricatie = parseInt(document.getElementById("input-an-fabricatie").value);
-		var valCategProd = document.getElementById("input-categ-produse").value;
+		var valAutorAnunt = document.getElementById("input-autor-anunt").value;
+		var valSpecificatie = document.getElementById("input-specificatii").value;
+		var valPret = document.getElementById("input-pret").value;
+		var keywordsArr = document.getElementById("input-keywords").value.split(" ");
 
-		// livrare = livrare == "true" ? true : livrare == "false" ? false : undefined;
-		// var minCalorii, maxCalorii;
-		// if (valCalorii != "toate") {
-		// 	[minCalorii, maxCalorii] = valCalorii.split(":");
-		// 	minCalorii = parseInt(minCalorii);
-		// 	maxCalorii = parseInt(maxCalorii);
-		// } else {
-		// 	minCalorii = 0;
-		// 	maxCalorii = 10000000000;
-		// }
+		var optiuniCategToate = document.getElementById("input-categ-produse").getElementsByTagName("option");
+		var optiuniCateg = [];
+		for (let opt of optiuniCategToate)
+			if (opt.selected) {
+				optiuniCateg.push(opt.value);
+			}
 
-		// console.log(valPret);
-
-		// var valCategorie = document.getElementById("inp-categorie").value;
+		var checkboxes = document.getElementsByName("gr-check");
+		var producatoriArr = [];
+		for (let chk of checkboxes)
+			if (chk.checked) {
+				producatoriArr.push(chk.value);
+			}
 
 		var articole = document.getElementsByClassName("produs");
 		for (let art of articole) {
-			// art.style.display = "none";
-			// let numeArt = art.getElementsByClassName("val-nume").innerHTML.toLowerCase();
-
-			// let cond1 = numeArt.startsWith(valNume);
-
-			// let caloriiArt = parseInt(art.getElementsByClassName("val-calorii")[0].innerHTML);
-			// let cond2 = minCalorii <= caloriiArt && caloriiArt < maxCalorii;
-
-			// let pretArt = parseInt(art.getElementsByClassName("val-pret")[0].innerHTML);
-			// let cond3 = valPret <= pretArt;
-
-			// let categArt = art.getElementsByClassName("val-categorie")[0].innerHTML;
-			// let cond4 = valCategorie == "toate" || categArt == valCategorie;
-
-			// let condFinala = cond1 && cond2 && cond3 && cond4;
-			// if (condFinala) art.style.display = "block";
-
 			art.style.display = "none";
 			let numeArt = art.getElementsByClassName("val-nume")[0].innerHTML.toLowerCase();
 			let condNume = numeArt.startsWith(valNume);
@@ -61,9 +59,36 @@ window.onload = function () {
 			let condLivrare = livrare == "Toate" || livrareArt == livrare;
 
 			let categProdArt = art.getElementsByClassName("val-categ-produse")[0].innerHTML;
-			let condCategProd = valCategProd == "toate" || categProdArt == valCategProd;
+			let condCategProd = optiuniCateg.includes(categProdArt) || optiuniCateg.includes("toate");
 
-			let condFinala = condNume && condLivrare && condAnFaricatie && condCategProd;
+			let autorAnunt = art.getElementsByClassName("val-autor-anunt")[0].innerHTML;
+			let condAutorAnunt = valAutorAnunt == "" || autorAnunt == valAutorAnunt;
+
+			let producator = art.getElementsByClassName("val-producator")[0].innerHTML;
+			let condProducator = producatoriArr.includes(producator);
+
+			let pretArt = parseFloat(art.getElementsByClassName("val-pret")[0].innerHTML);
+			let condPret = pretArt >= valPret;
+
+			let descriere = art.getElementsByClassName("val-descriere")[0].innerHTML.split(" ");
+			let condKeywords = false;
+			for (let keyword of keywordsArr)
+				if (keyword != "" && descriere.includes(keyword)) {
+					condKeywords = true;
+					break;
+				}
+			if (keywordsArr.length == 1 && keywordsArr[0] == "") condKeywords = true;
+
+			let specificatii = art.getElementsByClassName("val-specificatii")[0].innerHTML.split(",");
+			let condSpecificatii = false;
+			for (let spec of specificatii)
+				if (valSpecificatie == spec) {
+					condSpecificatii = true;
+					break;
+				}
+			if (valSpecificatie == "toate") condSpecificatii = true;
+
+			let condFinala = condNume && condLivrare && condAnFaricatie && condCategProd && condAutorAnunt && condProducator && condKeywords && condSpecificatii && condPret;
 			if (condFinala) art.style.display = "block";
 		}
 	};
