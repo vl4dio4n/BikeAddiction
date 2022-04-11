@@ -17,9 +17,13 @@ app.set("view engine", "ejs");
 
 app.use("/resurse", express.static(__dirname + "/resurse"));
 
-app.use("/*", function (req, res, next) {
-	res.locals.propGenerala = "bbn$";
-	next();
+app.get("/*", function (req, res, next) {
+	client.query("select * from unnest(enum_range(null::categ_produse))", function (err, rezCateg) {
+		categProduse = [];
+		for (let opt of rezCateg.rows) categProduse.push(opt.unnest);
+		res.locals.categProduse = categProduse;
+		next();
+	});
 });
 
 app.get(["/", "/index", "/home"], function (req, res) {
@@ -40,14 +44,12 @@ app.get("/produse", function (req, res) {
 	});
 
 	client.query("select distinct specificatii from produse", function (err, specificatii) {
-		console.log(specificatii);
 		specificatiiArr = [];
 		for (let obj of specificatii.rows) {
 			for (let specificatie of obj.specificatii) {
 				if (!specificatiiArr.includes(specificatie)) specificatiiArr.push(specificatie);
 			}
 		}
-		console.log(specificatiiArr);
 		res.locals.specificatii = specificatiiArr;
 	});
 

@@ -1,0 +1,20 @@
+#ascundere-filtre input[type="checkbox"] {
+	visibility: hidden;
+}
+
+#ascundere-filtre label #arrow-up {
+	display: none;
+}
+
+#ascundere-filtre label {
+	font-size: 1.3em;
+}
+
+#ascundere-filtre label:hover {
+	transition: all 0.1s linear;
+	color: var(--color6);
+}
+
+#container-filtre {
+	display: none;
+}

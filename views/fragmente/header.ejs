@@ -26,7 +26,7 @@
         <li><a href="/contact">Contact</a><div></div></li>
         <li><a href="/produse">Produse</a><div></div>
             <ul class="submeniu">
-                <li><a href="/produse?tip=biciclete">Biciclete</a>
+                <!-- <li><a href="/produse?tip=biciclete">Biciclete</a>
                     <ul class="submeniu">
                         <li><a href="sosea.html">Sosea</a></li>
                         <li><a href="mtb.html"><abbr title="Mountain Bike">MTB</abbr></a></li>
@@ -38,7 +38,21 @@
                 </li>
                 <li><a href="/produse?tip=piese"><b>Piese</b></a></li>
                 <li><a href="/produse?tip=accesorii"><b>Accesorii</b></a></li>
-                <li><a href="/produse?tip=echipamente"><b>Echipamente</b></a></li>
+                <li><a href="/produse?tip=echipamente"><b>Echipamente</b></a></li> -->
+                <% for(let categProdus of locals.categProduse){ %>
+                    <li><a href="/produse?tip=<%- categProdus %>"><%- categProdus[0].toUpperCase() + categProdus.slice(1) %> </a>
+                    <% if(categProdus == "biciclete"){ %>   
+                        <ul class="submeniu">
+                            <li><a href="sosea.html">Sosea</a></li>
+                            <li><a href="mtb.html"><abbr title="Mountain Bike">MTB</abbr></a></li>
+                            <li><a href="trekking.html">Trekking</a></li>
+                            <li><a href="electrice.html">Electrice</a></li>
+                            <li><a href="bmx.html"><abbr title="bicycle, motocross, with X standing for cross">BMX</abbr></a></li>
+                            <li><a href="copii.html">Copii</a></li>
+                        </ul>
+                    <% } %>  
+                    </li>
+                <% } %>  
             </ul>
         </li>
         <li><a href="creeaza-anunt.html">Creeaza anunt</a><div></div></li>

@@ -1,4 +1,15 @@
 window.onload = function () {
+	document.getElementById("check-filtre").onchange = function () {
+		document.getElementById("container-filtre").style.display = this.checked == true ? "block" : "none";
+		if (this.checked == true) {
+			document.getElementById("arrow-up").style.display = "inline";
+			document.getElementById("arrow-down").style.display = "none";
+		} else {
+			document.getElementById("arrow-up").style.display = "none";
+			document.getElementById("arrow-down").style.display = "inline";
+		}
+	};
+
 	document.getElementById("input-an-fabricatie").onchange = function () {
 		document.getElementById("infoRangeAn").innerHTML = ` (${this.value})`;
 	};
@@ -91,65 +102,90 @@ window.onload = function () {
 			let condFinala = condNume && condLivrare && condAnFaricatie && condCategProd && condAutorAnunt && condProducator && condKeywords && condSpecificatii && condPret;
 			if (condFinala) art.style.display = "block";
 		}
+
+		let p_vechi = document.getElementById("afis-suma-medie");
+		if (p_vechi) p_vechi.remove();
 	};
 
-	// document.getElementById("reseteaza").onclick = function () {
-	// 	var articole = document.getElementsByClassName("produs");
-	// 	for (let art of articole) {
-	// 		art.style.disply = "block";
-	// 	}
-	// 	document.getElementById("input-nume").value = "";
-	// 	document.getElementById("input-rad3").checked = true;
-	// 	document.getElementById("input-an-fabricatie").value = 0;
-	// 	document.getElementById("infoRange").innerHTML = new Date().getFullYear();
-	// 	document.getElementById("select-toate").selected = true;
-	// };
+	document.getElementById("resetare").onclick = function () {
+		var articole = document.getElementsByClassName("produs");
 
-	// function sortare(semn) {
-	// 	var articole = document.getElementsByClassName("produs");
-	// 	var v_articole = Array.from(articole);
-	// 	v_articole.sort(function (a, b) {
-	// 		let pret_a = parseFloat(a.getElementsbyClassName("val-pret")[0].innerHTML);
-	// 		let pret_b = parseFloat(a.getElementsbyClassName("val-pret")[0].innerHTML);
-	// 		if (pret_a != pret_b) return semn * (pret_a - pret_b);
-	// 		else {
-	// 			let nume_a = a.getElementsbyClassName("val-nume")[0].innerHTML.toLowerCase();
-	// 			let nume_b = a.getElementsbyClassName("val-nume")[0].innerHTML.toLowerCase();
-	// 			return semn * nume_a.localeCompare(nume_b);
-	// 		}
-	// 	});
-	// 	for (let art of v_articole) {
-	// 		art.parentElement.appendChild(art);
-	// 	}
-	// }
+		for (let art of articole) {
+			art.style.display = "block";
+		}
 
-	// document.getElementById("sortCrescNume").onclick = function () {
-	// 	sortare(1);
-	// };
+		var checkboxes = document.getElementsByName("gr-check");
+		for (let chk of checkboxes) chk.checked = true;
 
-	// document.getElementById("sortDescrescNume").onclick = function () {
-	// 	sortare(-1);
-	// };
-	// window.onkeypress = function (e) {
-	// 	if (e.key == "c" && e.altKey) {
-	// 		let p_vechi = document.getElementById("afis-suma");
-	// 		if (!p_vechi) {
-	// 			let p = document.createElement("p");
-	// 			p.id = "afisare-suma";
-	// 			let suma = 0;
-	// 			var articole = document.getElementsByClassName("produs");
-	// 			for (let art of articole)
-	// 				if (art.style.display != "none") {
-	// 					suma += parseFloat(art.getElementsByClassName("val-pret")[0].innerHTML);
-	// 				}
-	// 			p.innerHTML = "<b>Suma: </b>" + suma;
-	// 			var sectiune = document.getElementById("grid-produse");
-	// 			sectiune.parentNode.insertBefore(p, sectiune);
-	// 			setTimeout(function () {
-	// 				let p_vechi = document.getElementById("afis-suma");
-	// 				if (p_vechi) p_vechi.remove();
-	// 			}, 2000);
-	// 		}
-	// 	}
-	// };
+		var optiuniCategToate = document.getElementById("input-categ-produse").getElementsByTagName("option");
+		for (let opt of optiuniCategToate) opt.selected = false;
+		document.getElementById("select-multiplu-toate").selected = true;
+
+		document.getElementById("input-nume").value = "";
+		document.getElementById("input-rad3").checked = true;
+		document.getElementById("input-an-fabricatie").value = parseInt(document.getElementById("an-minim").innerHTML.slice(1, -1));
+		document.getElementById("infoRangeAn").innerHTML = parseInt(parseInt(document.getElementById("an-minim").innerHTML.slice(1, -1)));
+		document.getElementById("input-pret").value = parseInt(document.getElementById("pret-minim").innerHTML.slice(1, -1));
+		document.getElementById("infoRangePret").innerHTML = parseInt(parseInt(document.getElementById("pret-minim").innerHTML.slice(1, -1)));
+		document.getElementById("select-toate").selected = true;
+		document.getElementById("input-keywords").value = "";
+		document.getElementById("input-autor-anunt").value = "";
+
+		let p_vechi = document.getElementById("afis-suma-medie");
+		if (p_vechi) p_vechi.remove();
+	};
+
+	function sortare(semn) {
+		var articole = document.getElementsByClassName("produs");
+		var arrArticole = Array.from(articole);
+		arrArticole.sort(function (a, b) {
+			let an_a = parseInt(a.getElementsByClassName("val-an-fabricatie")[0].innerHTML);
+			let an_b = parseInt(b.getElementsByClassName("val-an-fabricatie")[0].innerHTML);
+			let pret_a = parseFloat(a.getElementsByClassName("val-pret")[0].innerHTML);
+			let pret_b = parseFloat(b.getElementsByClassName("val-pret")[0].innerHTML);
+
+			if (an_a / pret_a != an_b / pret_b) return semn * (an_a / pret_a - an_b / pret_b);
+			else {
+				let categ_a = a.getElementsByClassName("val-categ-produse")[0].innerHTML.toLowerCase();
+				let categ_b = b.getElementsByClassName("val-categ-produse")[0].innerHTML.toLowerCase();
+				return semn * categ_a.localeCompare(categ_b);
+			}
+		});
+		for (let art of arrArticole) {
+			art.parentElement.appendChild(art);
+		}
+	}
+
+	document.getElementById("sortCresc").onclick = function () {
+		sortare(1);
+	};
+
+	document.getElementById("sortDescresc").onclick = function () {
+		sortare(-1);
+	};
+
+	window.onkeydown = function (e) {
+		if (e.key == "c" && e.altKey) {
+			let p_vechi = document.getElementById("afis-suma-medie");
+			if (!p_vechi) {
+				let p = document.createElement("p");
+				p.id = "afis-suma-medie";
+				let suma = 0;
+				let cntArt = 0;
+				let articole = document.getElementsByClassName("produs");
+				for (let art of articole)
+					if (art.style.display != "none") {
+						suma += parseFloat(art.getElementsByClassName("val-pret")[0].innerHTML);
+						cntArt++;
+					}
+				p.innerHTML = `<b>Pretul mediu al articolelor afisate: ${suma / cntArt}</b>`;
+				var sectiune = document.getElementById("container-filtre");
+				sectiune.insertBefore(p, sectiune.lastChild);
+				setTimeout(function () {
+					let p_vechi = document.getElementById("afis-suma-medie");
+					if (p_vechi) p_vechi.remove();
+				}, 5000);
+			}
+		}
+	};
 };
