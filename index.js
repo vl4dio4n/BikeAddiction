@@ -193,7 +193,7 @@ function prelucrareSass(res, fileName, kwargs) {
 }
 
 function creeazaImagini() {
-	var buf = fs.readFileSync(__dirname + "/resurse/json/galerie.json").toString("utf8");
+	var buf = fs.readFileSync(__dirname + "/resurse/JSON/galerie.json").toString("utf8");
 	obImagini = JSON.parse(buf);
 
 	for (let imag of obImagini.imagini) {
@@ -219,7 +219,7 @@ function creeazaImagini() {
 creeazaImagini();
 
 function creeazaErori() {
-	var buf = fs.readFileSync(__dirname + "/resurse/json/erori.json").toString("utf8");
+	var buf = fs.readFileSync(__dirname + "/resurse/JSON/erori.json").toString("utf8");
 	obErori = JSON.parse(buf);
 }
 creeazaErori();
