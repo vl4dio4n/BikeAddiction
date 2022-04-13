@@ -18,3 +18,8 @@
 #container-filtre {
 	display: none;
 }
+
+#input-nume {
+	border: 3px solid var(--color6);
+	border-radius: 5px;
+}

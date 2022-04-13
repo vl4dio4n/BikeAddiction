@@ -1,12 +1,24 @@
-// const { shallowCopyFromList } = require("ejs/lib/utils");
 const express = require("express");
 const fs = require("fs");
 const sharp = require("sharp");
 const { Client } = require("pg");
 const ejs = require("ejs");
 const sass = require("sass");
+const formidable = require("formidable");
+const crypto = require("crypto");
+const session = require("express-session");
 
-var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
+// var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
+var client = new Client({
+	user: "jhhdiucbozcrwi",
+	password: "0b032edc0e5b15e26293a74a7addead1c17d73fb19fec55ab42d2a20ede85f49",
+	database: "dc5oj0g58od6m",
+	host: "ec2-34-197-84-74.compute-1.amazonaws.com",
+	port: 5432,
+	ssl: {
+		rejectUnauthorized: false,
+	},
+});
 client.connect();
 
 const obGlobal = { obImagini: null, obErori: null };
@@ -91,6 +103,20 @@ app.get("/galerie", function (req, res) {
 
 app.get("*/galerie-animata.css", function (req, res) {
 	prelucrareSass(res, "galerie-animata.scss", { nr_imag: nr_imag });
+});
+
+parolaServer = "tehniciweb";
+app.post("/inreg", function (req, res) {
+	var formular = new formidable.IncomingForm();
+	formular.parse(req, function (err, campuriText, campuriFisier) {
+		console.log(campuriText);
+		var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
+		var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values (${campuriText.username}, ${campuriText.nume}, ${campuriText.prenume}, ${parolaCriptata}, ${campuriText.email}, ${campuriText.culoare_chat})`;
+		client.query(comandaInserare, function (err, rezInserare) {
+			if (err) console.log(err);
+		});
+		res.send("OK");
+	});
 });
 
 // app.get("*/pagina-produse.css", function (req, res) {
@@ -236,5 +262,8 @@ function selecteazaImaginiAnimat() {
 	return imagini;
 }
 
-app.listen(8080);
+// app.listen(8080);
+var s_port = process.env.PORT || 8080;
+app.listen(s_port);
+
 console.log("A pornit");

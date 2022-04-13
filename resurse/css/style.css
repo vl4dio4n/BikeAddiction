@@ -34,6 +34,14 @@ body {
 body {
 	background-color: var(--color3);
 }
+
+body.dark {
+	--color1: #d48311;
+	--color2: #cc240a;
+	--color3: #4d0e04;
+	--color4: #b32009;
+	--color5: #8f1907;
+}
 main {
 	background-color: var(--color4);
 	margin-left: var(--margine-main);

@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener("load", function () {
 	document.getElementById("check-filtre").onchange = function () {
 		document.getElementById("container-filtre").style.display = this.checked == true ? "block" : "none";
 		if (this.checked == true) {
@@ -188,4 +188,4 @@ window.onload = function () {
 			}
 		}
 	};
-};
+});

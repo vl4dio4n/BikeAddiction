@@ -43,7 +43,7 @@
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;
-  animation-duration: 36s;
+  animation-duration: 63s;
   transform-origin: center center;
 }
 
@@ -51,36 +51,60 @@
   animation-play-state: paused;
 }
 
-#galerie-animata figure:nth-of-type(8) {
+#galerie-animata figure:nth-of-type(14) {
   animation-delay: 0s;
 }
 
-#galerie-animata figure:nth-of-type(7) {
+#galerie-animata figure:nth-of-type(13) {
   animation-delay: 4.5s;
 }
 
-#galerie-animata figure:nth-of-type(6) {
+#galerie-animata figure:nth-of-type(12) {
   animation-delay: 9s;
 }
 
-#galerie-animata figure:nth-of-type(5) {
+#galerie-animata figure:nth-of-type(11) {
   animation-delay: 13.5s;
 }
 
-#galerie-animata figure:nth-of-type(4) {
+#galerie-animata figure:nth-of-type(10) {
   animation-delay: 18s;
 }
 
-#galerie-animata figure:nth-of-type(3) {
+#galerie-animata figure:nth-of-type(9) {
   animation-delay: 22.5s;
 }
 
-#galerie-animata figure:nth-of-type(2) {
+#galerie-animata figure:nth-of-type(8) {
   animation-delay: 27s;
 }
 
-#galerie-animata figure:nth-of-type(1) {
+#galerie-animata figure:nth-of-type(7) {
   animation-delay: 31.5s;
+}
+
+#galerie-animata figure:nth-of-type(6) {
+  animation-delay: 36s;
+}
+
+#galerie-animata figure:nth-of-type(5) {
+  animation-delay: 40.5s;
+}
+
+#galerie-animata figure:nth-of-type(4) {
+  animation-delay: 45s;
+}
+
+#galerie-animata figure:nth-of-type(3) {
+  animation-delay: 49.5s;
+}
+
+#galerie-animata figure:nth-of-type(2) {
+  animation-delay: 54s;
+}
+
+#galerie-animata figure:nth-of-type(1) {
+  animation-delay: 58.5s;
 }
 
 @keyframes animatie-galerie {
@@ -89,22 +113,22 @@
     opacity: 1;
     clip-path: polygon(0 100%, 0 100%, 0 0, 100% 0, 100% 100%, 0% 100%, 100% 0%, 100% 0, 100% 0);
   }
-  8.3333333333% {
+  4.7619047619% {
     opacity: 1;
   }
-  12.5% {
+  7.1428571429% {
     z-index: 10;
     opacity: 0;
     clip-path: polygon(0 0%, 0 100%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%, 100% 0, 0% 0);
   }
-  12.50001% {
+  7.1428671429% {
     z-index: -10;
   }
-  87.5% {
+  92.8571428571% {
     opacity: 0;
     z-index: -10;
   }
-  87.50001% {
+  92.8571528571% {
     z-index: 0;
   }
   100% {
