@@ -10,15 +10,17 @@ const session = require("express-session");
 
 // var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
 var client = new Client({
-	user: "jhhdiucbozcrwi",
-	password: "0b032edc0e5b15e26293a74a7addead1c17d73fb19fec55ab42d2a20ede85f49",
-	database: "dc5oj0g58od6m",
-	host: "ec2-34-197-84-74.compute-1.amazonaws.com",
+	user: "xokygzdfvjrupd",
+	password: "ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20",
+	database: "d1kfoqthf001hn",
+	host: "ec2-54-158-247-210.compute-1.amazonaws.com",
 	port: 5432,
 	ssl: {
 		rejectUnauthorized: false,
 	},
 });
+
+// postgres://xokygzdfvjrupd:ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20@ec2-54-158-247-210.compute-1.amazonaws.com:5432/d1kfoqthf001hn
 client.connect();
 
 const obGlobal = { obImagini: null, obErori: null };
