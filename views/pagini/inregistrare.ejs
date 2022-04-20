@@ -15,13 +15,14 @@
         <section>
             <div class="afisaj">
             <h1>Inregistrare utilizator</h1>
-                
-            <%-include("../fragmente/formular", {action: "/inreg"}) %>
+            <% if(!locals.raspuns) {%> 
+                <%-include("../fragmente/formular", {action: "/inreg"}) %>
+            <% } %> 
             <% if(locals.raspuns) { %>
-            <%- locals.raspuns+"<br/>"%>
+                <%- locals.raspuns+"<br/>"%>
             <% } %>
             <% if(locals.err) { %>
-            <%- locals.err %>
+                <%- locals.err %>
             <% } %>
             </div>
         </section>

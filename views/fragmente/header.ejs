@@ -49,6 +49,14 @@
         </li>
         <li><a href="creeaza-anunt.html">Creeaza anunt</a><div></div></li>
         <li><a href="/galerie">Galerie</a><div></div></li>
+        <% if(locals.utilizator){ %> 
+            <li><div><%- locals.utilizator.username %> </div>
+                <ul>
+                    <li><a href="/profil">Profil</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </li>
+        <% } %> 
     </ul>
 </nav>
 

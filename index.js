@@ -7,37 +7,78 @@ const sass = require("sass");
 const formidable = require("formidable");
 const crypto = require("crypto");
 const session = require("express-session");
+const req = require("express/lib/request");
+const nodemailer = require("nodemailer");
 
-// var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
-var client = new Client({
-	user: "xokygzdfvjrupd",
-	password: "ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20",
-	database: "d1kfoqthf001hn",
-	host: "ec2-54-158-247-210.compute-1.amazonaws.com",
-	port: 5432,
-	ssl: {
-		rejectUnauthorized: false,
-	},
-});
+async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []) {
+	var transp = nodemailer.createTransport({
+		service: "gmail",
+		secure: false,
+		auth: {
+			//date login
+			user: obGlobal.emailServer,
+			pass: "kmowmawxfidetdyw",
+		},
+		tls: {
+			rejectUnauthorized: false,
+		},
+	});
+	//genereaza html
+	await transp.sendMail({
+		from: obGlobal.emailServer,
+		to: email,
+		subject: subiect, //"Te-ai inregistrat cu succes",
+		text: mesajText, //"Username-ul tau este "+username
+		html: mesajHtml, // `<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${username}.</p> <p><a href='http://${numeDomeniu}/cod/${username}/${token}'>Click aici pentru confirmare</a></p>`,
+		attachments: atasamente,
+	});
+	console.log("trimis mail");
+}
 
-// postgres://xokygzdfvjrupd:ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20@ec2-54-158-247-210.compute-1.amazonaws.com:5432/d1kfoqthf001hn
+if (process.env.SITE_ONLINE) {
+	var client = new Client({
+		user: "xokygzdfvjrupd",
+		password: "ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20",
+		database: "d1kfoqthf001hn",
+		host: "ec2-54-158-247-210.compute-1.amazonaws.com",
+		port: 5432,
+		ssl: {
+			rejectUnauthorized: false,
+		},
+	});
+} else {
+	var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
+}
+
 client.connect();
 
-const obGlobal = { obImagini: null, obErori: null };
+const obGlobal = { obImagini: null, obErori: null, categProduse: null, emailServer: "bikeaddiction2@gmail.com" };
 
 app = express();
+
+app.use(
+	session({
+		// aici se creeaza proprietatea session a requestului (pot folosi req.session)
+		secret: "abcdefg", //folosit de express session pentru criptarea id-ului de sesiune
+		resave: true,
+		saveUninitialized: false,
+	})
+);
 
 app.set("view engine", "ejs");
 
 app.use("/resurse", express.static(__dirname + "/resurse"));
 
+client.query("select * from unnest(enum_range(null::categ_produse))", function (err, rezCateg) {
+	let categProduse = [];
+	for (let opt of rezCateg.rows) categProduse.push(opt.unnest);
+	obGlobal.categProduse = categProduse;
+});
+
 app.get("/*", function (req, res, next) {
-	client.query("select * from unnest(enum_range(null::categ_produse))", function (err, rezCateg) {
-		categProduse = [];
-		for (let opt of rezCateg.rows) categProduse.push(opt.unnest);
-		res.locals.categProduse = categProduse;
-		next();
-	});
+	res.locals.categProduse = obGlobal.categProduse;
+	res.locals.utilizator = req.session.utilizator;
+	next();
 });
 
 app.get(["/", "/index", "/home"], function (req, res) {
@@ -112,52 +153,69 @@ app.post("/inreg", function (req, res) {
 	var formular = new formidable.IncomingForm();
 	formular.parse(req, function (err, campuriText, campuriFisier) {
 		console.log(campuriText);
-		var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-		var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values (${campuriText.username}, ${campuriText.nume}, ${campuriText.prenume}, ${parolaCriptata}, ${campuriText.email}, ${campuriText.culoare_chat})`;
-		client.query(comandaInserare, function (err, rezInserare) {
-			if (err) console.log(err);
-		});
-		res.send("OK");
+
+		var eroare = "";
+		if (campuriText.username == "") {
+			eroare += "Username necompletat. ";
+		}
+		if (!campuriText.username.match(new RegExp("^[A-Za-z0-9]+$"))) {
+			eroare += "Username nu corespunde pattern-ului. ";
+		}
+
+		if (!eroare) {
+			queryUtilizator = `select username from utilizatori where username='${campuriText.username}'`;
+			client.query(queryUtilizator, function (err, rezUtilizator) {
+				if (rezUtilizator.rows.length != 0) {
+					eroare += "Username-ul mai exista. ";
+					res.render("pagini/inregistrare", { err: "Eroare " + eroare });
+				} else {
+					var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
+					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values (${campuriText.username}, ${campuriText.nume}, ${campuriText.prenume}, ${parolaCriptata}, ${campuriText.email}, ${campuriText.culoare_chat})`;
+					client.query(comandaInserare, function (err, rezInserare) {
+						if (err) {
+							console.log(err);
+							res.render("pagini/inregistrare", { err: "Eroare baza de date" });
+						} else {
+							res.render("pagini/inregistrare", { raspuns: "Datele au fost introduse" });
+							trimiteMail(campuriText.email, "Te-ai inregistrat", "text", "<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${username}.</p>");
+						}
+					});
+				}
+			});
+		} else res.render("pagini/inregistrare", { err: "Reoare: " + eroare });
 	});
 });
 
-// app.get("*/pagina-produse.css", function (req, res) {
-// 	prelucrareSass(res, "pagina-produse.scss", { nr_produse: nr_produse });
-// });
+app.post("/login", function (req, res) {
+	var formular = new formidable.IncomingForm();
+	formular.parse(req, function (err, campuriText, campuriFisier) {
+		console.log(campuriText);
+		var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
+		var querySelect = `select * from utilizatori where username = '${campuriText.username}' and parola = '${parolaCriptata}'`;
+		client.query(querySelect, function (err, rezSelect) {
+			if (err) console.log(err);
+			else {
+				if (rezSelect.rows.length == 1) {
+					//daca am utilizatorul si a dat credentialele corecte
+					req.session.utilizator = {
+						nume: rezSelect.rows[0].nume,
+						prenume: rezSelect.rows[0].prenume,
+						username: rezSelect.rows[0].username,
+						culoareChat: rezSelect.rows[0].culoareChat,
+						rol: rezSelect.rows[0].rol,
+					};
+				}
+				res.redirec("/index");
+			}
+		});
+	});
+});
 
-// app.get("*/galerie-animata.css", function (req, res) {
-// 	let sirScss = fs.readFileSync(__dirname + "/resurse/sass/galerie-animata.scss").toString("utf8");
-// 	let rezScss = ejs.render(sirScss, { nr_imag: nr_imag });
-// 	let caleScss = __dirname + "/temp/galerie-animata.scss";
-// 	fs.writeFileSync(caleScss, rezScss);
-// 	try {
-// 		let rezCompilare = sass.compile(caleScss, { sourceMap: true });
-// 		let caleCss = __dirname + "/temp/galerie-animata.css";
-// 		fs.writeFileSync(caleCss, rezCompilare.css);
-// 		res.setHeader("Content-Type", "text/css");
-// 		res.sendFile(caleCss);
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.send("Eroare");
-// 	}
-// });
-
-// app.get("*/pagina-produse.css", function (req, res) {
-// 	let sirScss = fs.readFileSync(__dirname + "/resurse/sass/pagina-produse.scss").toString("utf8");
-// 	let rezScss = ejs.render(sirScss, { nr_imag: nr_imag });
-// 	let caleScss = __dirname + "/temp/pagina-produse.scss";
-// 	fs.writeFileSync(caleScss, rezScss);
-// 	try {
-// 		let rezCompilare = sass.compile(caleScss, { sourceMap: true });
-// 		let caleCss = __dirname + "/temp/pagina-produse.css";
-// 		fs.writeFileSync(caleCss, rezCompilare.css);
-// 		res.setHeader("Content-Type", "text/css");
-// 		res.sendFile(caleCss);
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.send("Eroare");
-// 	}
-// });
+app.get("/logout", function (req, res) {
+	req.session.destroy;
+	res.locals.utilizator = null;
+	req.render("pagini/logout");
+});
 
 app.get("/*.ejs", function (req, res) {
 	console.log("Eroare ejs");
