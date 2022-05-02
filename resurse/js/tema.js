@@ -1,8 +1,18 @@
+function seteazaButonTema() {
+	console.log(localStorage.getItem("tema"));
+	document.getElementById("sun").style.display = localStorage.getItem("tema") ? "none" : "inline";
+	document.getElementById("moon").style.display = localStorage.getItem("tema") ? "inline" : "none";
+}
+
 window.addEventListener("load", function () {
-	document.getElementById("btn-tema").onclick = function () {
-		var tema = localStorage.getItem("tema");
-		if (tema) localStorage.removeItem("tema");
-		else localStorage.setItem("tema", "dark");
-		document.body.classList.toggle("dark");
-	};
+	if (document.getElementById("btn-tema")) {
+		seteazaButonTema();
+		document.getElementById("btn-tema").onclick = function () {
+			var tema = localStorage.getItem("tema");
+			if (tema) localStorage.removeItem("tema");
+			else localStorage.setItem("tema", "volcano");
+			document.body.classList.toggle("volcano");
+			seteazaButonTema();
+		};
+	}
 });

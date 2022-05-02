@@ -1,7 +1,7 @@
 <script>
     var tema = localStorage.getItem("tema");
-	if (tema) document.body.classList.add("dark");
-	else document.body.classList.remove("dark");
+	if (tema) document.body.classList.add("volcano");
+	else document.body.classList.remove("volcano");
 </script>
 <header>
     <h1>BikeAddiction</h1>
@@ -26,12 +26,12 @@
                 <li><a href="/index#informatii">Informatii</a></li>
             </ul>
         </li>
-        <li><a href="/inregistrare">Inregistrare</a><div></div></li>
         <!-- <li><a href="signup.html">Sign Up</a></li> -->
         <li><a href="/contact">Contact</a><div></div></li>
         <li><a href="/produse">Produse</a><div></div>
             <ul class="submeniu">
-                <% for(let categProdus of locals.categProduse){ %>
+                
+                <% for(let categProdus of locals.categProduse){  %>
                     <li><a href="/produse?tip=<%- categProdus %>"><%- categProdus[0].toUpperCase() + categProdus.slice(1) %> </a>
                     <% if(categProdus == "biciclete"){ %>   
                         <ul class="submeniu">
@@ -49,6 +49,10 @@
         </li>
         <li><a href="creeaza-anunt.html">Creeaza anunt</a><div></div></li>
         <li><a href="/galerie">Galerie</a><div></div></li>
+        <% if(!locals.utilizator){ %>
+            <li><a href="/login">Sign In</a><div></div></li>
+            <li><a href="/inregistrare">Sign Up</a><div></div></li>
+        <% } %>
         <% if(locals.utilizator){ %> 
             <li><div><%- locals.utilizator.username %> </div>
                 <ul>

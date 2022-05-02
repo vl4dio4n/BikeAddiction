@@ -9,6 +9,18 @@ const crypto = require("crypto");
 const session = require("express-session");
 const req = require("express/lib/request");
 const nodemailer = require("nodemailer");
+const path = require("path");
+
+const obGlobal = {
+	obImagini: null,
+	obErori: null,
+	categProduse: null,
+	emailServer: "bikeaddiction2@gmail.com",
+	protocol: null,
+	numeDomeniu: null,
+	port: 8080,
+	sirAlphaNum: [],
+};
 
 async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []) {
 	var transp = nodemailer.createTransport({
@@ -36,6 +48,8 @@ async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []
 }
 
 if (process.env.SITE_ONLINE) {
+	obGlobal.protocol = "https://";
+	obGlobal.numeDomeniu = "boiling-refuge-00098.herokuapp.com";
 	var client = new Client({
 		user: "xokygzdfvjrupd",
 		password: "ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20",
@@ -47,12 +61,18 @@ if (process.env.SITE_ONLINE) {
 		},
 	});
 } else {
-	var client = new Client({ user: "vl4dio4n", password: "0000", database: "BikeAddiction", host: "localhost", port: 5432 });
+	obGlobal.protocol = "http://";
+	obGlobal.numeDomeniu = "localhost" + obGlobal.port;
+	var client = new Client({
+		user: "vl4dio4n",
+		password: "0000",
+		database: "BikeAddiction",
+		host: "localhost",
+		port: 5432,
+	});
 }
 
 client.connect();
-
-const obGlobal = { obImagini: null, obErori: null, categProduse: null, emailServer: "bikeaddiction2@gmail.com" };
 
 app = express();
 
@@ -75,7 +95,7 @@ client.query("select * from unnest(enum_range(null::categ_produse))", function (
 	obGlobal.categProduse = categProduse;
 });
 
-app.get("/*", function (req, res, next) {
+app.use("/*", function (req, res, next) {
 	res.locals.categProduse = obGlobal.categProduse;
 	res.locals.utilizator = req.session.utilizator;
 	next();
@@ -148,6 +168,22 @@ app.get("*/galerie-animata.css", function (req, res) {
 	prelucrareSass(res, "galerie-animata.scss", { nr_imag: nr_imag });
 });
 
+var intervaleAscii = [
+	[48, 57],
+	[65, 90],
+	[97, 122],
+];
+for (let interval of intervaleAscii)
+	for (let i = interval[0]; i <= interval[1]; i++) {
+		obGlobal.sirAlphaNum += String.fromCharCode(i);
+	}
+
+function genereazaToken(n) {
+	var token = "";
+	for (let i = 0; i < n; i++) token += obGlobal.sirAlphaNum[Math.floor(Math.random() * obGlobal.sirAlphaNum.lengh)];
+	return token;
+}
+
 parolaServer = "tehniciweb";
 app.post("/inreg", function (req, res) {
 	var formular = new formidable.IncomingForm();
@@ -164,25 +200,30 @@ app.post("/inreg", function (req, res) {
 
 		if (!eroare) {
 			queryUtilizator = `select username from utilizatori where username='${campuriText.username}'`;
+
 			client.query(queryUtilizator, function (err, rezUtilizator) {
+				if (err) console.log(err);
 				if (rezUtilizator.rows.length != 0) {
 					eroare += "Username-ul mai exista. ";
 					res.render("pagini/inregistrare", { err: "Eroare " + eroare });
 				} else {
+					var token = genereazaToken(100);
 					var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values (${campuriText.username}, ${campuriText.nume}, ${campuriText.prenume}, ${parolaCriptata}, ${campuriText.email}, ${campuriText.culoare_chat})`;
+					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values ('${campuriText.username}', '${campuriText.nume}', '${campuriText.prenume}', '${parolaCriptata}', '${campuriText.email}', '${campuriText.culoare_chat}', '${token}')`;
 					client.query(comandaInserare, function (err, rezInserare) {
 						if (err) {
 							console.log(err);
 							res.render("pagini/inregistrare", { err: "Eroare baza de date" });
 						} else {
 							res.render("pagini/inregistrare", { raspuns: "Datele au fost introduse" });
-							trimiteMail(campuriText.email, "Te-ai inregistrat", "text", "<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${username}.</p>");
+							//http://localhost:8080/cod/[username]/[token]
+							let linkConfirmare = `${obGlobal.protocol}${ogGlobal.numeDomeniu}/cod/${campuriText.username}/${token}`;
+							trimiteMail(campuriText.email, `Te-ai inregistrat", "text", "<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${campuriText.username}.</p> <p>Link confirmare: <a href='${linkConfirmare}'>${campuriText.username}</a></p>`);
 						}
 					});
 				}
 			});
-		} else res.render("pagini/inregistrare", { err: "Reoare: " + eroare });
+		} else res.render("pagini/inregistrare", { err: "Eroare: " + eroare });
 	});
 });
 
@@ -191,7 +232,7 @@ app.post("/login", function (req, res) {
 	formular.parse(req, function (err, campuriText, campuriFisier) {
 		console.log(campuriText);
 		var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-		var querySelect = `select * from utilizatori where username = '${campuriText.username}' and parola = '${parolaCriptata}'`;
+		var querySelect = `select * from utilizatori where username = '${campuriText.username}' and parola = '${parolaCriptata}' and confirmat_mail = true`;
 		client.query(querySelect, function (err, rezSelect) {
 			if (err) console.log(err);
 			else {
@@ -209,6 +250,26 @@ app.post("/login", function (req, res) {
 			}
 		});
 	});
+});
+
+app.get("/cod/:username/:token", function (res, req) {
+	var comandaSelect = `update utilizatori set confirmat_mail = true where username = ${req.params.username} and cod = ${req.params.token}`;
+	client.query(comandaSelect, function (err, rezUpdate) {
+		if (err) {
+			console.log(err);
+			randeazaEroare(res, 2);
+		} else {
+			if (rezUpdate.rowCount == 1) {
+				res.render("pagini/confirmare");
+			} else {
+				randeazaEroare(res, 2, "Eroare link confirmare", "Nu e user-ul sau link-ul corect");
+			}
+		}
+	});
+});
+
+app.get("/login", function (req, res) {
+	res.render("pagini/login");
 });
 
 app.get("/logout", function (req, res) {
@@ -323,7 +384,7 @@ function selecteazaImaginiAnimat() {
 }
 
 // app.listen(8080);
-var s_port = process.env.PORT || 8080;
+var s_port = process.env.PORT || obGlobal.port;
 app.listen(s_port);
 
 console.log("A pornit");

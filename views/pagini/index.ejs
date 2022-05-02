@@ -5,6 +5,7 @@
         <meta name="keywords" content="biciclete, piese biciclete, accesorii biciclete, echipamente <b>ciclism</b>"> <!-- de adaugat partea de second-hand, trasee si parteneri de excursie -->
         <meta name="description" content="Aici poti gasi o gama larga de biciclete, piese, accesorii si echipamente destinate acestora la un pret avantajos">
         <%- include("../fragmente/head.ejs"); %>
+        <script src="/resurse/js/tema.js"></script>
 
     </head> 
     <body>
@@ -91,23 +92,11 @@
                         bicicleta sa stie la ce ne referim cand spunem acest lucru.
                     </p>
 
-                    <p><button id="btn-tema">Schimba tema</button></p>
-                    <% if(!locals.utilizator){ %>
-                        <form id="form_inreg"  method="post" class="date"  action="/login"  enctype="multipart/form-data">
-                            <p>
-                                <label>
-                                    Username: <input type="text" name="username" id="inp-username" value="prof<%= Math.floor(Math.random()*100000) %>" required pattern="[A-Za-z0-9]+">
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    Parola: <input id="parl" type="password" required  name="parola" value="">
-                                </label>
-                            </p>
-                            <p><input type="submit" value="Sign In"></p>
-                        </form>
-                    <% } %>
-
+                    <p><button id="btn-tema">
+                        <span id="sun" style="display: none;"><i class="fas fa-sun"></i></span>
+                        <span id="moon" style="display: none;"><i class="fas fa-moon"></i></span>
+                    </button></p>
+                
                 </section>
     
                 <section id="ajutor">

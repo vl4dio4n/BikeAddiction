@@ -24,6 +24,13 @@
 			"text": "Muncim, muncim!",
 			"imagine": "interzis.png",
 			"icon": "fas fa-ban"
+		},
+		{
+			"identificator": 2,
+			"status": false,
+			"titlu": "Eroare baza date",
+			"text": "Reveniti mai tarziu!",
+			"imagine": "interzis.png"
 		}
 	]
 }

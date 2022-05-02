@@ -34,7 +34,7 @@ body {
 	background-color: var(--color3);
 }
 
-body.dark {
+body.volcano {
 	--color1: #d48311;
 	--color2: #cc240a;
 	--color3: #4d0e04;
@@ -51,6 +51,23 @@ main {
 h1 {
 	color: var(--color6);
 	margin: var(--margine-section);
+}
+
+#btn-tema {
+	width: 70px;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+}
+
+#btn-tema span {
+	font-size: 1.5em;
+}
+
+#btn-tema:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
 }
 
 section {
