@@ -248,7 +248,7 @@ app.post("/login", function (req, res) {
 						rol: rezSelect.rows[0].rol,
 					};
 				}
-				res.redirec("/index");
+				res.redirect("/index");
 			}
 		});
 	});
