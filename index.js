@@ -62,7 +62,7 @@ if (process.env.SITE_ONLINE) {
 	});
 } else {
 	obGlobal.protocol = "http://";
-	obGlobal.numeDomeniu = "localhost" + obGlobal.port;
+	obGlobal.numeDomeniu = "localhost:" + obGlobal.port;
 	var client = new Client({
 		user: "vl4dio4n",
 		password: "0000",
@@ -180,7 +180,9 @@ for (let interval of intervaleAscii)
 
 function genereazaToken(n) {
 	var token = "";
-	for (let i = 0; i < n; i++) token += obGlobal.sirAlphaNum[Math.floor(Math.random() * obGlobal.sirAlphaNum.lengh)];
+	for (let i = 0; i < n; i++) {
+		token += obGlobal.sirAlphaNum[Math.floor(Math.random() * obGlobal.sirAlphaNum.length)];
+	}
 	return token;
 }
 
@@ -197,10 +199,9 @@ app.post("/inreg", function (req, res) {
 		if (!campuriText.username.match(new RegExp("^[A-Za-z0-9]+$"))) {
 			eroare += "Username nu corespunde pattern-ului. ";
 		}
-
 		if (!eroare) {
 			queryUtilizator = `select username from utilizatori where username='${campuriText.username}'`;
-
+			console.log(queryUtilizator);
 			client.query(queryUtilizator, function (err, rezUtilizator) {
 				if (err) console.log(err);
 				if (rezUtilizator.rows.length != 0) {
@@ -209,7 +210,8 @@ app.post("/inreg", function (req, res) {
 				} else {
 					var token = genereazaToken(100);
 					var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat) values ('${campuriText.username}', '${campuriText.nume}', '${campuriText.prenume}', '${parolaCriptata}', '${campuriText.email}', '${campuriText.culoare_chat}', '${token}')`;
+					console.log(token);
+					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat, cod) values ('${campuriText.username}', '${campuriText.nume}', '${campuriText.prenume}', '${parolaCriptata}', '${campuriText.email}', '${campuriText.culoare_chat}', '${token}')`;
 					client.query(comandaInserare, function (err, rezInserare) {
 						if (err) {
 							console.log(err);
@@ -217,8 +219,8 @@ app.post("/inreg", function (req, res) {
 						} else {
 							res.render("pagini/inregistrare", { raspuns: "Datele au fost introduse" });
 							//http://localhost:8080/cod/[username]/[token]
-							let linkConfirmare = `${obGlobal.protocol}${ogGlobal.numeDomeniu}/cod/${campuriText.username}/${token}`;
-							trimiteMail(campuriText.email, `Te-ai inregistrat", "text", "<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${campuriText.username}.</p> <p>Link confirmare: <a href='${linkConfirmare}'>${campuriText.username}</a></p>`);
+							let linkConfirmare = `${obGlobal.protocol}${obGlobal.numeDomeniu}/cod/${campuriText.username}/${token}`;
+							trimiteMail(campuriText.email, `Te-ai inregistrat`, "text", `'<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${campuriText.username}.</p> <p>Link confirmare: <a href='${linkConfirmare}'>${campuriText.username}</a></p>`);
 						}
 					});
 				}
@@ -252,8 +254,9 @@ app.post("/login", function (req, res) {
 	});
 });
 
-app.get("/cod/:username/:token", function (res, req) {
-	var comandaSelect = `update utilizatori set confirmat_mail = true where username = ${req.params.username} and cod = ${req.params.token}`;
+app.get("/cod/:username/:token", function (req, res) {
+	var comandaSelect = `update utilizatori set confirmat_mail = true where username = '${req.params.username}' and cod = '${req.params.token}'`;
+	console.log("I was here");
 	client.query(comandaSelect, function (err, rezUpdate) {
 		if (err) {
 			console.log(err);
