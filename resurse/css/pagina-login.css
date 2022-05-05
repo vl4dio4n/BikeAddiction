@@ -1,0 +1,82 @@
+.form {
+	box-sizing: border-box;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	row-gap: 30px;
+}
+
+/* .form-inreg {
+	width: 50%;
+	margin-left: 20%;
+	margin-bottom: 30px;
+} */
+
+.form-inreg div {
+	display: grid;
+	box-sizing: border-box;
+	grid-template-areas:
+		"z-titlu z-titlu"
+		"l-username f-username"
+		"l-parl f-parl"
+		"z-butoane z-butoane";
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 10px;
+}
+
+#titlu {
+	grid-area: z-titlu;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.form-inreg > div > label {
+	width: 100%;
+	text-align: right;
+}
+.form-inreg > div > input {
+	text-align: left;
+}
+
+#lbl-username {
+	grid-area: l-username;
+}
+#inp-username {
+	grid-area: f-username;
+}
+
+#lbl-parl {
+	grid-area: l-parl;
+}
+#inp-parl {
+	grid-area: f-parl;
+}
+
+#butoane {
+	grid-area: z-butoane;
+	text-align: center;
+}
+
+input[type="text"],
+input[type="password"] {
+	border-radius: 8px;
+	height: 1.8em;
+}
+
+#buton {
+	width: 80px;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+}
+
+#buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
+}

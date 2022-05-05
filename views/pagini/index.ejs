@@ -219,6 +219,13 @@
                 <section id="utilizatori-online">
                     <h2>Utilizatori Online</h2>
                     <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum maxime repellat dolorum optio! Natus voluptatem autem aliquid provident temporibus tempore repellat, illo quis totam est animi ut cupiditate, labore mollitia?</p>
+                    <% if(locals.utiliz_online){ %> 
+                    <ul>
+                        <% for(let utiliz of locals.utiliz_online) {%>
+                            <li><%- utiliz.username %> (<%- utiliz.nume %>)</li>    
+                        <% } %>  
+                    </ul>
+                    <% } %> 
                 </section>
                 <section id="statistici">
                     <h2>Statistici</h2>

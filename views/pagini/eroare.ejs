@@ -2,8 +2,8 @@
 <html lang = "ro">
     <head>
         <title><%- locals.titlu %></title>
-        <meta name="keywords" content="eroare, 404"> <!-- de adaugat partea de second-hand, trasee si parteneri de excursie -->
-        <meta name="description" content="Error 404 - Pagina nu a  fost gasita">
+        <meta name="keywords" content="eroare"> <!-- de adaugat partea de second-hand, trasee si parteneri de excursie -->
+        <meta name="description" content="Error">
         <%- include("../fragmente/head.ejs"); %>
 
     </head> 
@@ -12,7 +12,7 @@
         <main>
             <section id="eroare">
                 <div>
-                    <img src="<%- locals.imagine %>" alt="text">
+                    <img src="/<%- locals.imagine %>" alt="text">
                     <h1 id="heading-eroare"> <%- locals.titlu %> <span class="<%- locals.icon %>" ></span></h1>
                     <p id="text-eroare"><%- locals.text %></p>
                 </div>

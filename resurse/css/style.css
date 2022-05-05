@@ -3,13 +3,13 @@
 	padding: 0px;
 }
 html {
-	font-size: 20px;
-	font-family: "Hind Siliguri", sans-serif;
 	--inaltime-buton: 2.5em;
 	--inaltime-buton-top: 3em;
 	--inaltime-meniu: 2.5em;
 }
 body {
+	font-size: 20px;
+	font-family: "Hind Siliguri", sans-serif;
 	--color1: #ada6ad;
 	--color2: #6e696e;
 	--color3: #212021;
@@ -41,7 +41,13 @@ body.volcano {
 	--color4: #b32009;
 	--color5: #8f1907;
 }
+
+body.problema-vedere {
+	font-size: 30px;
+}
+
 main {
+	box-sizing: border-box;
 	background-color: var(--color4);
 	margin-left: var(--margine-main);
 	margin-right: var(--margine-main);
@@ -71,6 +77,7 @@ h1 {
 }
 
 section {
+	box-sizing: border-box;
 	border: 2px solid var(--color6);
 	padding: var(--padding-section);
 	margin: var(--margine-section);
@@ -259,6 +266,85 @@ p small {
 	justify-content: center;
 }
 
+/************************ altele *****************************/
+
+.mesaj-eroare,
+.mesaj-succes {
+	background-color: var(--culoare-marcaj);
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+	color: red;
+}
+
+.mesaj-succes {
+	color: var(--color6);
+}
+
+/*********************** profil-mic **************************/
+
+#profil-mic {
+	display: grid;
+	grid-template-areas:
+		"z-nume z-imag"
+		"z-username z-imag"
+		"z-logout z-imag";
+	grid-template-columns: 3fr 1fr;
+	background-color: var(--color5);
+	border-radius: 10px;
+	padding: 15px;
+	padding-bottom: 5px;
+	width: 200px;
+	position: absolute;
+	top: var(--margine-main);
+	right: var(--margine-main);
+}
+
+#nume-profil {
+	grid-area: z-nume;
+	color: var(--color6);
+	font-size: 0.7em;
+	text-align: left;
+	line-height: 0.8em;
+}
+
+#username-profil {
+	grid-area: z-username;
+	color: var(--color6);
+	text-decoration: none;
+	font-size: 0.7em;
+	text-align: left;
+	line-height: 0.8em;
+}
+
+#logout-profil {
+	grid-area: z-logout;
+	color: var(--color6);
+	text-decoration: none;
+	font-size: 0.7em;
+	text-align: left;
+	line-height: 0.8em;
+}
+
+#contianer-imag-profil-mica {
+	grid-area: z-imag;
+	text-align: right;
+}
+
+#imag-mica-profil {
+	border: 2px solid var(--color6);
+	border-radius: 50%;
+}
+
+#profil-mic a:hover {
+	transition: all 0.1s linear;
+	text-decoration: underline;
+}
+
 /************************ iframe *****************************/
 
 #ifr-links {
@@ -334,6 +420,12 @@ p small {
 }
 #sectiune-contact > ul > li > ul > li > a:hover {
 	color: var(--color6);
+}
+
+@media screen and (max-width: 1000px) {
+	.ascunde {
+		display: none;
+	}
 }
 
 @media screen and (max-width: 750px) {

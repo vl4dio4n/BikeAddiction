@@ -1,0 +1,42 @@
+<form class="form-inreg"  method="post" class="date"  action="<%= locals.action %>"  enctype="multipart/form-data">
+    <div>
+        <label for="inp-username" id="lbl-username"> Username*: </label>
+        <input type="text" name="username" id="inp-username" value="biker<%= Math.floor(Math.random()*100000) %>" required pattern="[A-Za-z0-9]+">
+
+        <label for="inp-nume" id="lbl-nume"> Nume*: </label>
+        <input type="text" name="nume" id="inp-nume" value="Gogulescu" required>
+
+        <label for="inp-prenume" id="lbl-prenume"> Prenume*: </label>
+        <input type="text" name="prenume" id="inp-prenume" value="Gogu" required>
+
+        <label for="inp-parl" id="lbl-parl"> Parola*: </label>
+        <input id="inp-parl" type="password" required  name="parola" value="">
+        <p id="info">(trebuie sa contina cel putin 8 caractere dintre care minim o litera mare, o litera mica, 2 cifre si caracterul punct)</p>
+
+        <label for="inp-rparl" id="lbl-rparl"> Reintroduceti parola*: </label>
+        <input id="inp-rparl" required type="password" name="rparola" value="">
+
+        <label for="inp-email" id="lbl-email"> Email*: </label>
+        <input type="text" name="email" id="inp-email" required value="bikeaddiction2@gmail.com" size="50">
+
+        <label for="inp-sel-culoare" id="lbl-sel-culoare"> Culoare text chat: </label>
+        <select name="culoare_chat" id="inp-sel-culoare"><option value="red" selected>rosu</option><option value="green">verde</option><option value="blue">albastru</option></select>
+
+        <label for="inp-problema-vedere" id="lbl-problema-vedere"> Problema de vedere: </label>
+        <input type="checkbox" name="problema_vedere" id="inp-problema-vedere" value="true">
+
+        <label for="inp-poza" id="lbl-poza"> Poza: </label> 
+        <input type="file" id="inp-poza" name="poza">			
+        
+        <p id="butoane">
+            <input class="buton" type="submit" value="Trimite">
+            <input class="buton" type="reset" value="Reseteaza">
+        </p>
+
+        <% if(locals.utilizator) {%> 
+            <figure id="contianer-imag-mare-profil">
+                <img id="imag-mare-profil" src="/<%- locals.utilizator.cale_poza_mare %>" alt="[imagine profil]" />
+            </figure>
+        <% } %> 
+    </div>
+</form>

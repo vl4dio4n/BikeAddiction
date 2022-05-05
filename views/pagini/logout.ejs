@@ -2,8 +2,8 @@
 <html  lang="ro">
     <head>
         <meta name="description" content="BikeAddiction - Logout">
-        <meta name="keywords" content="cofetarie, Dulcelind, logout">
-        <title>Cofetăria Dulcelind - înregistrare </title>
+        <meta name="keywords" content="BikeAddiction, logout">
+        <title>BikeAddiction - logout </title>
         <%- include("../fragmente/head") %>     
         <script type="text/javascript" src=/resurse/js/produse.js></script>
     </head>
@@ -11,7 +11,9 @@
     <%- include("../fragmente/header") %>
 
     <main>
-    Ai fost delogat!
+        <section>
+            <p class="mesaj-succes"><%- locals.raspuns %></p>
+        </section>
     </main>
 
     <%- include('../fragmente/footer') %>

@@ -1,0 +1,47 @@
+.form-inreg div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-username f-username z-poza-mare"
+		"l-nume f-nume z-poza-mare"
+		"l-prenume f-prenume z-poza-mare"
+		"l-parl-noua f-parl-noua z-poza-mare"
+		"l-parl-noua z-info z-poza-mare"
+		"l-parl f-parl z-poza-mare"
+		"l-email f-email z-poza-mare"
+		"l-sel-culoare f-sel-culoare z-poza-mare"
+		"l-problema-vedere f-problema-vedere z-poza-mare"
+		"l-poza f-poza z-poza-mare"
+		"z-butoane z-butoane z-poza-mare";
+	grid-template-columns: 1fr 3fr 2fr;
+}
+
+#contianer-imag-mare-profil {
+	grid-area: z-poza-mare;
+}
+
+#imag-mare-profil {
+	border-radius: 50%;
+	border: 2px solid var(--color6);
+	width: 100%;
+}
+
+#stergere > .form-inreg div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-parl f-parl"
+		"l-parl z-butoan-stergere";
+	grid-template-columns: 1fr 3fr;
+}
+
+#buton-stergere .buton {
+	grid-area: z-buton-stergere;
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+section:nth-child(1) {
+	margin-bottom: 20px;
+}

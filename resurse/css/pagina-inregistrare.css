@@ -1,0 +1,149 @@
+.form {
+	box-sizing: border-box;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	row-gap: 30px;
+}
+
+.form h2 {
+	width: 100%;
+	text-align: center;
+}
+
+.form-inreg div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-username f-username"
+		"l-nume f-nume"
+		"l-prenume f-prenume"
+		"l-parl f-parl"
+		"l-parl z-info"
+		"l-rparl f-rparl"
+		"l-email f-email"
+		"l-sel-culoare f-sel-culoare"
+		"l-problema-vedere f-problema-vedere"
+		"l-poza f-poza"
+		"z-butoane z-butoane";
+	grid-gap: 10px;
+	width: 100%;
+	grid-template-columns: 1fr 3fr;
+}
+
+.form-inreg > div > label {
+	width: 100%;
+	text-align: right;
+}
+.form-inreg > div > input[type="text"],
+.form-inreg > div > input[type="password"],
+.form-inreg > div > input[type="file"] {
+	width: 80%;
+	text-align: left;
+}
+
+.form-inreg select {
+	width: 80%;
+}
+
+#lbl-username {
+	grid-area: l-username;
+}
+#inp-username {
+	grid-area: f-username;
+}
+#lbl-nume {
+	grid-area: l-nume;
+}
+#inp-nume {
+	grid-area: f-nume;
+}
+#lbl-prenume {
+	grid-area: l-prenume;
+}
+#inp-prenume {
+	grid-area: f-prenume;
+}
+#lbl-parl {
+	grid-area: l-parl;
+}
+#inp-parl {
+	grid-area: f-parl;
+}
+#info {
+	grid-area: z-info;
+	font-size: 0.6em;
+	width: 80%;
+}
+#lbl-rparl {
+	grid-area: l-rparl;
+}
+#inp-rparl {
+	grid-area: f-rparl;
+}
+#lbl-email {
+	grid-area: l-email;
+}
+#inp-email {
+	grid-area: f-email;
+}
+#lbl-sel-culoare {
+	grid-area: l-sel-culoare;
+}
+#inp-sel-culoare {
+	grid-area: f-sel-culoare;
+}
+#lbl-problema-vedere {
+	grid-area: l-problema-vedere;
+}
+#inp-problema-vedere {
+	grid-area: f-problema-vedere;
+}
+#lbl-poza {
+	grid-area: l-poza;
+}
+#inp-poza {
+	grid-area: f-poza;
+}
+
+#butoane {
+	grid-area: z-butoane;
+	text-align: center;
+}
+
+input[type="text"],
+input[type="password"] {
+	border-radius: 8px;
+	height: 1.8em;
+}
+
+input[type="checkbox"] {
+	height: 35px;
+}
+
+input[type="file"] {
+	padding-top: 5px;
+}
+
+select {
+	border-radius: 8px;
+	height: 2.2em;
+}
+
+.buton {
+	width: 80px;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+}
+
+.buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
+}

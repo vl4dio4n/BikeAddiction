@@ -5,25 +5,25 @@
         <meta name="keywords" content="BikeAddicton, inregistrare, utilizatori">
         <title>BikeAddiction - înregistrare </title>
         <%- include("../fragmente/head") %>     
+        <link rel="stylesheet" href="/resurse/css/pagina-inregistrare.css" type="text/css"/>
         <script type="text/javascript" src=/resurse/js/inregistrare.js></script>
     </head>
     <body>
     <%- include("../fragmente/header") %>
 
     <main>
-        <section>
-            <div class="afisaj">
-            <h1>Inregistrare utilizator</h1>
+        <section class="form">
+            <h2>Inregistrare utilizator</h2>
             <% if(!locals.raspuns) {%> 
-                <%-include("../fragmente/formular", {action: "/inreg"}) %>
+                <%-include("../fragmente/formular-inreg", {action: "/inreg"}) %>
             <% } %> 
             <% if(locals.raspuns) { %>
-                <%- locals.raspuns+"<br/>"%>
+                <p class="mesaj-succes"><%- locals.raspuns+"<br/>"%> </p>
             <% } %>
             <% if(locals.err) { %>
-                <%- locals.err %>
+                <p class="mesaj-eroare"> <%- locals.err %> </p>
             <% } %>
-            </div>
+
         </section>
     </main>
 

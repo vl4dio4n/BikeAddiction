@@ -55,7 +55,6 @@ ul.meniu li {
 	margin: 0;
 	height: var(--inaltime-meniu);
 	position: relative;
-	overflow: hidden;
 }
 
 ul.meniu li > div::after {

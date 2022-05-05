@@ -1,5 +1,4 @@
 function seteazaButonTema() {
-	console.log(localStorage.getItem("tema"));
 	document.getElementById("sun").style.display = localStorage.getItem("tema") ? "none" : "inline";
 	document.getElementById("moon").style.display = localStorage.getItem("tema") ? "inline" : "none";
 }

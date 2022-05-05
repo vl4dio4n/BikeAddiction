@@ -15,9 +15,9 @@ function paragrafEroare(mesaj) {
 }
 
 window.addEventListener("load", function () {
-	var formular = document.getElementsByClassName("form-inreg")[0];
-	if (formular) {
-		formular.onsubmit = function () {
+	var formularProfil = document.getElementsByClassName("form-inreg")[0];
+	if (formularProfil) {
+		formularProfil.onsubmit = function () {
 			inputs = document.getElementsByTagName("input");
 			for (let elem of inputs)
 				if (elem.reqired && !elem.value) {
@@ -30,18 +30,20 @@ window.addEventListener("load", function () {
 				return false;
 			}
 
-			if (document.getElementById("inp-parl").value != document.getElementById("inp-rparl").value) {
-				paragrafEroare('Nu ati introdus acelasi sir pentru campurile "parola" si "reintroducere parola".');
-				return false;
-			}
-
-			parola = document.getElementById("inp-parl").value;
-			if (parola.length < 8 || !new RegExp("[a-z]", "g").test(parola) || !new RegExp("[A-Z]", "g").test(parola) || !new RegExp(".", "g").test(parola) || parola.match(new RegExp("[0-9]", "g")).length < 2) {
-				paragrafEroare("Parola nu respecta conditiile cerute.");
-				return false;
-			}
+			parola = document.getElementById("inp-parl-noua").value;
+			if (parola.length > 0)
+				if (parola.length < 8 || !new RegExp("[a-z]", "g").test(parola) || !new RegExp("[A-Z]", "g").test(parola) || !new RegExp(".", "g").test(parola) || parola.match(new RegExp("[0-9]", "g")).length < 2) {
+					paragrafEroare("Parola nu respecta conditiile cerute.");
+					return false;
+				}
 
 			return true;
 		};
 	}
+	var formularStergere = document.getElementsByClassName("form-inreg")[1];
+	if (formularStergere)
+		formularStergere.onsubmit = function () {
+			ans = prompt("Esti sigur ca vrei sa stergi aces cont? Da sau Nu:");
+			return ans == "Da";
+		};
 });

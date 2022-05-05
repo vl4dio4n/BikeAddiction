@@ -5,6 +5,16 @@
 </script>
 <header>
     <h1>BikeAddiction</h1>
+    <% if(locals.utilizator) {%> 
+        <div id="profil-mic">
+            <p id="nume-profil"><%- locals.utilizator.nume %> <%- locals.utilizator.prenume %> </p>
+            <a href="/profil" id="username-profil"><i class="fas fa-user"></i> <%- locals.utilizator.username %> </a>
+            <a href="/logout" id="logout-profil"><i class="fas fa-sign-out"></i> Logout</a>
+            <figure id="contianer-imag-profil-mica">
+                <img id="imag-mica-profil" src="/<%- locals.utilizator.cale_poza_mica %>" alt="[imagine profil]" />
+            </figure>
+        </div>
+    <% } %>
 </header>
 <nav>
     <label id="hamburger" for="ch-meniu">
@@ -47,15 +57,18 @@
                 <% } %>  
             </ul>
         </li>
-        <li><a href="creeaza-anunt.html">Creeaza anunt</a><div></div></li>
+        <li><a href="creeaza-anunt.html">Creeaza <span class="ascunde">anunt</span></a><div></div></li>
         <li><a href="/galerie">Galerie</a><div></div></li>
         <% if(!locals.utilizator){ %>
             <li><a href="/login">Sign In</a><div></div></li>
             <li><a href="/inregistrare">Sign Up</a><div></div></li>
         <% } %>
+        <% if(locals.utilizator && locals.utilizator.rol == "admin"){ %>
+            <li><a href="/useri">Users</a><div></div></li>
+        <% } %> 
         <% if(locals.utilizator){ %> 
-            <li><div><%- locals.utilizator.username %> </div>
-                <ul>
+            <li><a href="/profil"><%- locals.utilizator.username %></a><div></div>
+                <ul class="submeniu">
                     <li><a href="/profil">Profil</a></li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
