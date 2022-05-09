@@ -7,11 +7,11 @@
     <h1>BikeAddiction</h1>
     <% if(locals.utilizator) {%> 
         <div id="profil-mic">
-            <p id="nume-profil"><%- locals.utilizator.nume %> <%- locals.utilizator.prenume %> </p>
-            <a href="/profil" id="username-profil"><i class="fas fa-user"></i> <%- locals.utilizator.username %> </a>
-            <a href="/logout" id="logout-profil"><i class="fas fa-sign-out"></i> Logout</a>
-            <figure id="contianer-imag-profil-mica">
-                <img id="imag-mica-profil" src="/<%- locals.utilizator.cale_poza_mica %>" alt="[imagine profil]" />
+            <p class="nume-profil"><%- locals.utilizator.nume %> <%- locals.utilizator.prenume %> </p>
+            <a href="/profil" class="username-profil"><i class="fas fa-user"></i> <%- locals.utilizator.username %> </a>
+            <a href="/logout" class="logout-profil"><i class="fas fa-sign-out"></i> Logout</a>
+            <figure class="contianer-imag-profil-mica">
+                <img class="imag-mica-profil" src="/<%- locals.utilizator.cale_poza_mica %>" alt="[imagine profil]" />
             </figure>
         </div>
     <% } %>
@@ -57,7 +57,7 @@
                 <% } %>  
             </ul>
         </li>
-        <li><a href="creeaza-anunt.html">Creeaza <span class="ascunde">anunt</span></a><div></div></li>
+        <li><a href="/creeaza-anunt">Creeaza <span class="ascunde">anunt</span></a><div></div></li>
         <li><a href="/galerie">Galerie</a><div></div></li>
         <% if(!locals.utilizator){ %>
             <li><a href="/login">Sign In</a><div></div></li>

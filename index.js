@@ -127,7 +127,6 @@ app.use("/*", function (req, res, next) {
 	next();
 });
 
-/*
 app.get("/*", function (req, res, next) {
 	let id_utiliz = req.session.utilizator ? req.session.utilizator.id : null;
 	let queryInsert = `insert into accesari(ip, user_id, pagina) values ('${getIp(req)}', ${id_utiliz} ,'${req.url}')`;
@@ -138,24 +137,32 @@ app.get("/*", function (req, res, next) {
 });
 
 function stergeAccesariVechi() {
-	let queryDelete = `delete from accesari where now() - data_accesare > interval '10 minutes'`;
+	let queryDelete = `delete from accesari where now() - data_accesare > interval '24 hours'`;
 	client.query(queryDelete, function (err, rezQuery) {
 		if (err) console.log(err);
 	});
 }
-setInterval(stergeAccesariVechi, 10 * 60 * 1000);
+setInterval(stergeAccesariVechi, 60 * 60 * 1000);
 
 app.get(["/", "/index", "/home"], function (req, res) {
-	querySelect = `select username, nume from utilizatori where utilizatori.id in (select distinct user_id from accesari where now() - data_accesare <= interval '5 minutes')`;
+	querySelect = `select u.username, u.nume, u.prenume, u.poza_profil, MAX(acc.data_accesare) last_date
+		from utilizatori u
+		join accesari acc ON acc.user_id = u.id
+		where u.id in 
+			(select distinct user_id 
+			from accesari 
+			where now() - data_accesare <= interval '5.5 minutes'
+			)
+		group by u.username, u.nume, u.prenume, u.poza_profil
+		order by last_date desc;`;
 	client.query(querySelect, function (err, rezQuery) {
 		let utiliz_online = [];
 		if (err) console.log(err);
-		else {
-			utiliz_online = rezQuery.rows;
-		}
+		else utiliz_online = rezQuery.rows;
 		res.render("pagini/index", { ip: getIp(req), utiliz_online: utiliz_online });
 	});
-});*/
+});
+
 app.get(["/", "/index", "/home"], function (req, res) {
 	res.render("pagini/index", { ip: req.ip });
 });
@@ -250,13 +257,18 @@ app.post("/inreg", function (req, res) {
 	formular.parse(req, function (err, campuriText, campuriFisier) {
 		console.log(campuriText);
 
+		// TO DO posa profil
+
 		var eroare = verificaFormular(campuriText, "inreg");
 		campuriText["problema_vedere"] = campuriText["problema_vedere"] ? true : false;
 
 		if (!eroare) {
-			queryUtilizator = `select username from utilizatori where username='${campuriText.username}'`;
+			// queryUtilizator = `select username from utilizatori where username='${campuriText.username}'`;
+
+			var queryUtilizator = `select username from utilizatori where username= $1::text`;
+
 			console.log(queryUtilizator);
-			client.query(queryUtilizator, function (err, rezUtilizator) {
+			client.query(queryUtilizator, [campuriText.username], function (err, rezUtilizator) {
 				if (err) console.log(err);
 				if (rezUtilizator.rows.length != 0) {
 					eroare += "Username-ul mai exista. ";
@@ -265,8 +277,9 @@ app.post("/inreg", function (req, res) {
 					var token1 = genereazaToken2();
 					var token2 = genereazaToken1(80);
 					var parolaCriptata = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-					var caleUtilizator = path.join(__dirname, "poze_uploadate", username, "poza.png");
-					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat, cod, problema_vedere, poza_profil) values ('${campuriText.username}', '${campuriText.nume}', '${campuriText.prenume}', '${parolaCriptata}', '${campuriText.email}', '${campuriText.culoare_chat}', '${token2}', ${campuriText.problema_vedere}, '${caleUtilizator}')`;
+					var comandaInserare = `insert into utilizatori (username, nume, prenume, parola, email, culoare_chat, cod, problema_vedere) 
+										values ('${campuriText.username}', '${campuriText.nume}', '${campuriText.prenume}', '${parolaCriptata}', '${campuriText.email}', 
+										'${campuriText.culoare_chat}', '${token2}', ${campuriText.problema_vedere})`;
 					client.query(comandaInserare, function (err, rezInserare) {
 						if (err) {
 							console.log(err);
@@ -287,11 +300,21 @@ app.post("/inreg", function (req, res) {
 	});
 	formular.on("fileBegin", function (nume, fisier) {
 		caleUtilizator = path.join(__dirname, "poze_uploadate", username);
-		if (!fs.existsSync()) fs.mkdirSync(caleUtilizator);
+		if (!fs.existsSync(caleUtilizator)) {
+			fs.mkdirSync(caleUtilizator);
+			fs.mkdirSync(path.join.apply(caleUtilizator, "produse"));
+		}
 		var file_name = fisier.originalFilename.split(".");
 		fisier.filepath = path.join(caleUtilizator, `_poza.${file_name[file_name.length - 1]}`);
 	});
 	formular.on("file", function (nume, fisier) {
+		console.log(fisier);
+		if (fisier.size == 0) {
+			fs.unlinkSync(fisier.filepath);
+			return;
+		}
+		var queryUpdate = `update utilizatori set poza_profil = true where username='${username}'`;
+		client.query(queryUpdate, function (err, rezUpdate) {});
 		var file_name = fisier.originalFilename.split(".");
 		convertImage(username, `_poza.${file_name[file_name.length - 1]}`);
 	});
@@ -322,6 +345,7 @@ app.post("/login", function (req, res) {
 							rol: rezSelect.rows[0].rol,
 							problema_vedere: rezSelect.rows[0].problema_vedere,
 						};
+						console.log("hey", req.session.utilizator, "hey");
 						res.redirect("/index");
 					} else {
 						req.session.mesajLogin = "Mail-ul acestui cont nu a fost inca confirmat.";
@@ -337,22 +361,40 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/useri", function (req, res) {
-	if (req.session.utilizator && req.session.utilizator.rol == "admin")
-		client.query("select * from utilizatori where rol = 'comun`", function (err, rezQuery) {
-			res.render("pagini/useri", { useri: rezQuery.rows });
+	if (req.session.utilizator && req.session.utilizator.rol == "admin") {
+		var querySelect = `select * from utilizatori where rol = 'comun'`;
+		client.query(querySelect, function (err, rezQuery) {
+			if (err) randeazaEroare(-1, "Eroare", "Eroare baza de date");
+			else res.render("pagini/useri", { users: rezQuery.rows });
 		});
-	else {
+	} else {
 		randeazaEroare(res, 403);
 	}
 });
 
-app.post("/sterge_utiliz", function (req, res) {
+app.post("/stergere_poza_profil", function (req, res) {
 	var formular = new formidable.IncomingForm();
 	formular.parse(req, function (err, campuriText, campuriFisier) {
-		let queryDel = `delete from utilizatori where id = ${campuriText.id_utiliz}`;
-		client.query(queryDel, function (err, rezQuery) {
-			console.log(err);
-			res.redirect("/useri");
+		let queryUpdate = `update utilizatori set poza_profil = false where id=${parseInt(campuriText.id_utiliz)} and poza_profil = true`;
+		console.log(queryUpdate);
+		client.query(queryUpdate, function (err, rezUpdate) {
+			if (err) console.log(err);
+			else {
+				if (rezUpdate.rowCount == 0) {
+					res.redirect("/useri");
+				} else {
+					// TO DO de sters pozele din folder + afisat mesaj la user
+					querySelect = `select username, email from utilizatori where id = ${parseInt(campuriText.id_utiliz)}`;
+					client.query(querySelect, function (err, rezQuery) {
+						if (err) console.log(err);
+						else {
+							let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
+							trimiteMail(rezQuery.rows[0].email, "Ne pare rau", "text", `<h1>Salut</h1><p>Ne pare rau insa am decis sa-ti stergem poza de profil a contului <span style="color: blue; text-decoration: underline;">${rezQuery.rows[0].username}</span> de pe site-ul <a href=${link}>BikeAddiction</a></p>`);
+							res.redirect("/useri");
+						}
+					});
+				}
+			}
 		});
 	});
 });
@@ -390,9 +432,15 @@ app.post("/profil", function (req, res) {
 		var eroare = verificaFormular(campuriText, "profil");
 		if (eroare != "") res.render("pagini/profil", { type: false, raspuns: eroare });
 		else {
-			//TO DO query
-			var queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', email = '${campuriText.email}', culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere} where parola='${criptareParola}' and username='${username}'`;
-			if (campuriText.parola_noua != "") queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', parola = '${criptareParolaNoua}', email = '${campuriText.email}', culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere} where parola='${criptareParola}' and username='${username}'`;
+			//TO DO update poza profil
+			console.log(campuriFile, "\n", campuriFile.poza.size > 0);
+			var queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', email = '${campuriText.email}', 
+							culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere}
+							where parola='${criptareParola}' and username='${username}'`;
+			if (campuriText.parola_noua != "")
+				queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', parola = '${criptareParolaNoua}',
+							email = '${campuriText.email}', culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere}
+							where parola='${criptareParola}' and username='${username}'`;
 			client.query(queryUpdate, function (err, rez) {
 				if (err) {
 					console.log(err);
@@ -409,7 +457,6 @@ app.post("/profil", function (req, res) {
 					req.session.utilizator.email = campuriText.email;
 					req.session.utilizator.culoare_chat = campuriText.culoare_chat;
 					req.session.utilizator.problema_vedere = campuriText.problema_vedere;
-					console.log("hey", req.session.utilizator, "hey");
 					let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
 					trimiteMail(campuriText.email, "Ti-ai schimbat profilul", "text", `<h1>Salut!</h1><p>Te informam ca ai schimbat profilul de utilizator al contului <span style="color: blue; text-decoration: underline;">${username}</span> pe site-ul <a href="${link}">BikeAddiction</a></p><p>Noile tale date sunt:</p><ul><li>Nume: ${campuriText.nume}</li><li>Prenume: ${campuriText.prenume}</li><li>Email: ${campuriText.email}</li><li>Culoare Chat: ${campuriText.culoare_chat}</li><li>Problema de vedere: ${campuriText.problema_vedere}</li></ul>`);
 				}
@@ -420,23 +467,30 @@ app.post("/profil", function (req, res) {
 	});
 	formular.on("fileBegin", function (nume, fisier) {
 		var caleUtilizator = path.join(__dirname, "poze_uploadate", username);
-		// if (fs.readdirSync(caleUtilizator).length > 0) {
-		// 	console.log("I was here");
-		// 	fs.unlinkSync(fs.readdirSync(caleUtilizator)[0]);
-		// 	fs.unlinkSync(fs.readdirSync(caleUtilizator)[0]);
-		// 	fs.unlinkSync(fs.readdirSync(caleUtilizator)[0]);
-		// }
 		let file_name = fisier.originalFilename.split(".");
 		fisier.filepath = path.join(caleUtilizator, `_poza.${file_name[file_name.length - 1]}`);
 	});
 	formular.on("file", function (nume, fisier) {
-		var caleUtilizator = path.join(__dirname, "poze_uploadate", username, "poza.png");
-		var queryUpdate = `update utilizatori set poza_profil = '${caleUtilizator}' where username='${username}'`;
+		console.log("I was here");
+		console.log("Step 2", fisier);
+		if (fisier.size == 0) {
+			fs.unlinkSync(fisier.filepath);
+			return;
+		}
+		var caleUtilizator = path.join(__dirname, "poze_uploadate", username);
+		for (let fileName of fs.readdirSync(caleUtilizator))
+			if (fileName[0] != "_" && fileName != "produse") {
+				console.log("fileName = ", fileName);
+				fs.unlinkSync(path.join(caleUtilizator, fileName));
+			}
+		var queryUpdate = `update utilizatori set poza_profil = true where username='${username}'`;
 		client.query(queryUpdate, function (err, rezUpdate) {});
 		var file_name = fisier.originalFilename.split(".");
+		console.log("Step 3");
 		convertImage(username, `_poza.${file_name[file_name.length - 1]}`);
 		req.session.utilizator.cale_poza_mica = path.join("poze_uploadate", req.session.utilizator.username, "poza-mica.png");
 		req.session.utilizator.cale_poza_mare = path.join("poze_uploadate", req.session.utilizator.username, "poza.png");
+		console.log("Step 4");
 	});
 });
 
@@ -470,6 +524,31 @@ app.post("/stergere_cont", function (req, res) {
 				//TO DO stergere folder utilizator
 			}
 		});
+	});
+});
+
+app.post("/creeaza-anunt", function (req, res) {
+	if (!req.session.utilizator) {
+		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
+		return;
+	}
+	var username = req.session.utilizator.username;
+	var formular = new formidable.IncomingForm();
+
+	formular.parse(req, function (req, campuriText, campuriFisier) {
+		campuriText["livrare"] = campuriText["livrare"] ? true : false;
+
+		var eroare = verificaFormular(campuriText, "anunt");
+		if (eroare != "") res.render("pagini/creeaza-anunt", { type: false, raspuns: eroare });
+		else {
+			// am presupus ca utilizatorul va trimite mereu o imagine
+			let caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
+			let calePoza = `${username}/poze_uplodata/produse/produs_${fs.readdirSync(caleProdus).length}`;
+			var queryInsert = `insert into produse (nume, pret, an_fabricatie, producator, categ_produse, descriere, autor_anunt, email, telefon, livrare, imagine) 
+					values ('${campuriText.nume}', ${campuriText.pret}, ${campuriText.an}, '${campuriText.producator}', '${campuriText.categ_produse}', 
+					'${campuriText.descriere}', '${username}', '${campuriText.email}', '${campuriText.telefon}', ${campuriText.livrare}, '${calePoza}')`;
+			res.render("pagini/creeaza-anunt", { type: true, raspuns: "Nu s-a intamplat nimic" });
+		}
 	});
 });
 
@@ -513,18 +592,36 @@ function getDate() {
 
 function verificaFormular(campuriText, type) {
 	var eroare = "";
-	if (campuriText.email == "") eroare += "Email necompletat. ";
-	if (campuriText.nume == "") eroare += "Nume necompletat. ";
-	if (campuriText.prenume == "") eroare += "Prenume necompletat. ";
-	if (campuriText.parola == "") eroare += "Parola necompletata. ";
-	if (!new RegExp("^.+@.+\\..+$", "g").test(campuriText.email)) eroare += "Email invalid. ";
-	if (type == "inreg") {
-		if (campuriText.username == "") eroare += "Username necompletat. ";
-		if (!campuriText.username.match(new RegExp("^[A-Za-z0-9]+$"))) eroare += "Username nu corespunde pattern-ului. ";
-		if (campuriText.parola.length < 8 || !new RegExp("[a-z]", "g").test(campuriText.parola) || !new RegExp("[A-Z]", "g").test(campuriText.parola) || !new RegExp(".", "g").test(campuriText.parola) || campuriText.parola.match(new RegExp("[0-9]", "g")).length < 2) eroare += "Parola nu corespunde patternului. ";
+	if (type != "anunt") {
+		if (campuriText.email == "") eroare += "Email necompletat. ";
+		if (campuriText.nume == "") eroare += "Nume necompletat. ";
+		if (campuriText.prenume == "") eroare += "Prenume necompletat. ";
+		if (campuriText.parola == "") eroare += "Parola necompletata. ";
+		if (!new RegExp("^.+@.+\\..+$", "g").test(campuriText.email)) eroare += "Email invalid. ";
+		if (type == "inreg") {
+			if (campuriText.username == "") eroare += "Username necompletat. ";
+			if (!campuriText.username.match(new RegExp("^[A-Za-z0-9]+$"))) eroare += "Username nu corespunde pattern-ului. ";
+			if (campuriText.parola.length < 8 || !new RegExp("[a-z]", "g").test(campuriText.parola) || !new RegExp("[A-Z]", "g").test(campuriText.parola) || !new RegExp(".", "g").test(campuriText.parola) || campuriText.parola.match(new RegExp("[0-9]", "g")).length < 2) eroare += "Parola nu corespunde patternului. ";
+		} else {
+			if (campuriText.parola_noua.length > 0) if (campuriText.parola_noua.length < 8 || !new RegExp("[a-z]", "g").test(campuriText.parola_noua) || !new RegExp("[A-Z]", "g").test(campuriText.parola_noua) || !new RegExp(".", "g").test(campuriText.parola_noua) || campuriText.parola_noua.match(new RegExp("[0-9]", "g")).length < 2) eroare += "Parola nu corespunde patternului. ";
+		}
 	} else {
-		if (campuriText.parola_noua.length > 0) if (campuriText.parola_noua.length < 8 || !new RegExp("[a-z]", "g").test(campuriText.parola_noua) || !new RegExp("[A-Z]", "g").test(campuriText.parola_noua) || !new RegExp(".", "g").test(campuriText.parola_noua) || campuriText.parola_noua.match(new RegExp("[0-9]", "g")).length < 2) eroare += "Parola nu corespunde patternului. ";
+		if (campuriText.nume == "") eroare += "Nume necompletat. ";
+		if (campuriText.pret == "") eroare += "Pret necompletat. ";
+		if (campuriText.an == "") eroare += "An necompletat. ";
+		if (campuriText.producator == "") eroare += "Producator necompletat. ";
+		if (campuriText.nume.length > 50) eroare += "Lungimea numelui nu poate depasi 50 de caractere. ";
+		if (campuriText.producator.length > 300) eroare += "Lungimea numelui producatorului nu poate depasi 300 de caractere. ";
+		if (campuriText.email != "" && !new RegExp("^.+@.+\\..+$", "g").test(campuriText.email)) eroare += "Email invalid. ";
+
+		let pret = campuriText.pret.split(".");
+		if (pret.length > 2 || (pret.length == 1 && parseInt(pret[0]).toString() != pret[0]) || (pret.length == 2 && (parseInt(pret[0]).toString() != pret[0] || parseInt(pret[1]).toString() != pret[1]))) eroare += "Introduceti un numar valid. ";
+		if (pret[0].length > 6 || (pret[1] && pret[1].length > 2)) eroare += `Numarul rotunjit nu trebuie sa depaseasca valoarea 10<sup>6</sup> si precizia de 2 zecimale. `;
+
+		let an = campuriText.an;
+		if (an.length > 4 || parseInt(an).toString() != an) eroare += "Introduceti un an valid.";
 	}
+
 	return eroare;
 }
 
@@ -552,8 +649,8 @@ function convertImage(username, file) {
 	sharp(old_path).resize({ height: 300, width: 300 }).toFile(new_path);
 	new_path = path.join(__dirname, "poze_uploadate", username, nume + "-mica.png");
 	sharp(old_path).resize({ height: 50, width: 50 }).toFile(new_path);
-	// let caleUtilizator = path.join(__dirname, "poze_uploadate", username);
-	// fs.unlinkSync(fs.readdirSync(caleUtilizator)[0]);
+	let caleUtilizator = path.join(__dirname, "poze_uploadate", username, file);
+	fs.unlinkSync(caleUtilizator);
 }
 
 function creeazaImagini() {
@@ -624,6 +721,19 @@ function selecteazaImaginiAnimat() {
 			imagini.push(imag);
 		}
 	return imagini;
+}
+
+function getIp(req) {
+	//pentru Heroku
+	var ip = req.headers["x-forwarded-for"]; // ip-ul userului pentru care este forwardat mesajul
+	if (ip) {
+		let vect = ip.split(",");
+		return vect[vect.length - 1];
+	} else if (req.ip) {
+		return req.ip;
+	} else {
+		return req.connection.remoteAddress;
+	}
 }
 
 // app.listen(8080);

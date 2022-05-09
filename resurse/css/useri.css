@@ -1,0 +1,67 @@
+#users-section {
+	box-sizing: border-box;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+#users-section h2 {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+#users-table {
+	border: 2px solid var(--color6);
+	border-spacing: 0;
+	width: 80%;
+	margin-bottom: 30px;
+}
+
+#users-table th,
+#users-table td {
+	border: 2px solid var(--color6);
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+}
+
+#users-table tbody tr:nth-child(2n + 1) > td,
+#users-table tbody tr:nth-child(2n + 1) > th {
+	background-color: var(--culoare-marcaj);
+}
+
+#users-table tbody tr:nth-child(2n) > td,
+#users-table tbody tr:nth-child(2n) > th {
+	background-color: rgba(51, 49, 51, 0.15);
+}
+
+#users-table tr:hover {
+	transition: all 0.2s linear;
+	background-color: rgb(245, 255, 100, 0.6);
+}
+
+.imag-profil-mica {
+	margin-top: 8px;
+	border-radius: 50%;
+	border: 2px solid var(--color6);
+}
+
+.buton {
+	width: auto;
+	height: 40px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+}
+
+.buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
+}

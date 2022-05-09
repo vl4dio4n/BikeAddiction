@@ -218,13 +218,21 @@
                 </section>
                 <section id="utilizatori-online">
                     <h2>Utilizatori Online</h2>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum maxime repellat dolorum optio! Natus voluptatem autem aliquid provident temporibus tempore repellat, illo quis totam est animi ut cupiditate, labore mollitia?</p>
                     <% if(locals.utiliz_online){ %> 
-                    <ul>
                         <% for(let utiliz of locals.utiliz_online) {%>
-                            <li><%- utiliz.username %> (<%- utiliz.nume %>)</li>    
+                            <div class = "profil-utiliz">
+                                <p class="nume-profil"><%- utiliz.nume %> <%- utiliz.prenume %> </p>
+                                <p class="username-profil"><i class="fas fa-user"></i> <%- utiliz.username %> </p>
+                                <figure class="contianer-imag-profil-mica">
+                                    <% 
+                                    let cale_poza = "resurse/imagini/altele/poza-mica.png";
+                                    if(utiliz.poza_profil)
+                                        cale_poza = `poze_uploadate/${utiliz.username}/poza-mica.png`; 
+                                    %>
+                                    <img class="imag-mica-profil" src="/<%- cale_poza %>" alt="[imagine profil]" />
+                                </figure>
+                            </div>    
                         <% } %>  
-                    </ul>
                     <% } %> 
                 </section>
                 <section id="statistici">

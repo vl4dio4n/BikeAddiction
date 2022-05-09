@@ -1,0 +1,212 @@
+.form {
+	box-sizing: border-box;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	row-gap: 30px;
+}
+
+.form h2 {
+	width: 100%;
+	text-align: center;
+}
+
+.form-anunt div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-nume f-nume"
+		"l-nume z-info-nume"
+		"l-pret f-pret"
+		"l-pret z-info-pret"
+		"l-an f-an"
+		"l-an z-info-an"
+		"l-producator f-producator"
+		"l-producator z-info-producator"
+		"l-descriere f-descriere"
+		"l-sel-categorie f-sel-categorie"
+		"l-specificatii f-specificatii"
+		"l-specificatii z-info-specificatii"
+		"l-email f-email"
+		"l-telefon f-telefon"
+		"l-livrare f-livrare"
+		"l-poza f-poza"
+		"z-butoane z-butoane";
+	grid-gap: 5px;
+	width: 100%;
+	grid-template-columns: 1fr 4fr;
+}
+
+.form-anunt > div > label {
+	width: 100%;
+	text-align: right;
+	margin-top: 15px;
+}
+.form-anunt > div > input[type="text"],
+.form-anunt > div > input[type="file"] {
+	width: 100%;
+	text-align: left;
+	margin-top: 15px;
+}
+
+.form-anunt select,
+.form-anunt textarea {
+	width: 100%;
+	margin-top: 15px;
+}
+
+#lbl-nume {
+	grid-area: l-nume;
+}
+#inp-nume {
+	grid-area: f-nume;
+}
+#info-nume {
+	grid-area: z-info-nume;
+	font-size: 0.6em;
+	width: 100%;
+}
+
+#lbl-pret {
+	grid-area: l-pret;
+}
+#inp-pret {
+	grid-area: f-pret;
+}
+#info-pret {
+	grid-area: z-info-pret;
+	font-size: 0.6em;
+	width: 100%;
+}
+
+#lbl-an {
+	grid-area: l-an;
+}
+#inp-an {
+	grid-area: f-an;
+}
+#info-an {
+	grid-area: z-info-an;
+	font-size: 0.6em;
+	width: 100%;
+}
+
+#lbl-producator {
+	grid-area: l-producator;
+}
+#inp-producator {
+	grid-area: f-producator;
+}
+#info-producator {
+	grid-area: z-info-producator;
+	font-size: 0.6em;
+	width: 100%;
+}
+
+#lbl-descriere {
+	grid-area: l-descriere;
+}
+#inp-descriere {
+	grid-area: f-descriere;
+}
+
+#lbl-sel-categ {
+	grid-area: l-sel-categorie;
+}
+#inp-sel-categ {
+	grid-area: f-sel-categorie;
+}
+
+#lbl-specificatii {
+	grid-area: l-specificatii;
+}
+#inp-specificatii {
+	grid-area: f-specificatii;
+}
+#info-specificatii {
+	grid-area: z-info-specificatii;
+	font-size: 0.6em;
+	width: 100%;
+}
+
+#lbl-email {
+	grid-area: l-email;
+}
+#inp-email {
+	grid-area: f-email;
+}
+
+#lbl-telefon {
+	grid-area: l-telefon;
+}
+#inp-telefon {
+	grid-area: f-telefon;
+}
+
+#lbl-livrare {
+	grid-area: l-livrare;
+}
+#inp-livrare {
+	grid-area: f-livrare;
+}
+
+#lbl-poza {
+	margin-top: 0px;
+	grid-area: l-poza;
+}
+#inp-poza {
+	margin-top: 0px;
+	grid-area: f-poza;
+}
+
+#butoane {
+	grid-area: z-butoane;
+	text-align: center;
+	margin-top: 20px;
+}
+
+input[type="text"] {
+	border-radius: 8px;
+	height: 1.8em;
+}
+
+input[type="checkbox"] {
+	height: 65px;
+}
+
+input[type="file"] {
+	padding-top: 5px;
+}
+
+textarea {
+	border-radius: 8px;
+	height: 100px;
+}
+
+select {
+	border-radius: 8px;
+	height: 2.2em;
+}
+
+.buton {
+	width: 100px;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+}
+
+.buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
+}
+
+.mesaj-eroare,
+.mesaj-succes {
+	margin-top: 0px;
+}

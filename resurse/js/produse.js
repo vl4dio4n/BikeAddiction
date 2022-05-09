@@ -1,6 +1,14 @@
 window.addEventListener("load", function () {
 	document.getElementById("check-filtre").onchange = function () {
-		document.getElementById("container-filtre").style.display = this.checked == true ? "block" : "none";
+		let container_filtre = document.getElementById("container-filtre");
+		if (container_filtre.classList[0] == "clasa-ascundere") {
+			container_filtre.classList.remove("clasa-ascundere");
+			container_filtre.classList.add("grid-filtre");
+		} else {
+			container_filtre.classList.remove("grid-filtre");
+			container_filtre.classList.add("clasa-ascundere");
+		}
+
 		if (this.checked == true) {
 			document.getElementById("arrow-up").style.display = "inline";
 			document.getElementById("arrow-down").style.display = "none";
@@ -178,8 +186,11 @@ window.addEventListener("load", function () {
 						suma += parseFloat(art.getElementsByClassName("val-pret")[0].innerHTML);
 						cntArt++;
 					}
-				p.innerHTML = `<b>Pretul mediu al articolelor afisate: ${suma / cntArt}</b>`;
+				p.innerHTML = `Pretul mediu al articolelor afisate: ${suma / cntArt}`;
 				var sectiune = document.getElementById("container-filtre");
+				p.classList.add("mesaj-succes");
+				p.style.gridArea = "z-mesaj";
+				p.style.marginBottom = "20px";
 				sectiune.insertBefore(p, sectiune.lastChild);
 				setTimeout(function () {
 					let p_vechi = document.getElementById("afis-suma-medie");

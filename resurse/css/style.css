@@ -140,7 +140,10 @@ section {
 }
 #utilizatori-online {
 	/* zona 5 */
+	text-align: center;
 	grid-area: z-utilizatori-online;
+	height: 500px;
+	overflow-y: scroll;
 }
 #statistici {
 	/* zona 6 */
@@ -304,7 +307,7 @@ p small {
 	right: var(--margine-main);
 }
 
-#nume-profil {
+.nume-profil {
 	grid-area: z-nume;
 	color: var(--color6);
 	font-size: 0.7em;
@@ -312,7 +315,7 @@ p small {
 	line-height: 0.8em;
 }
 
-#username-profil {
+.username-profil {
 	grid-area: z-username;
 	color: var(--color6);
 	text-decoration: none;
@@ -321,7 +324,7 @@ p small {
 	line-height: 0.8em;
 }
 
-#logout-profil {
+.logout-profil {
 	grid-area: z-logout;
 	color: var(--color6);
 	text-decoration: none;
@@ -330,12 +333,12 @@ p small {
 	line-height: 0.8em;
 }
 
-#contianer-imag-profil-mica {
+.contianer-imag-profil-mica {
 	grid-area: z-imag;
 	text-align: right;
 }
 
-#imag-mica-profil {
+.imag-mica-profil {
 	border: 2px solid var(--color6);
 	border-radius: 50%;
 }
@@ -343,6 +346,22 @@ p small {
 #profil-mic a:hover {
 	transition: all 0.1s linear;
 	text-decoration: underline;
+}
+
+/*********************** profil-utiliz ***********************/
+
+.profil-utiliz {
+	display: grid;
+	grid-template-areas:
+		"z-nume z-imag"
+		"z-username z-imag";
+	grid-template-columns: 2fr 1fr;
+	background-color: var(--color5);
+	border-radius: 10px;
+	border: 2px solid var(--color6);
+	padding: 15px;
+	padding-bottom: 5px;
+	margin: 15px;
 }
 
 /************************ iframe *****************************/

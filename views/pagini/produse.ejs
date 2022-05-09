@@ -22,77 +22,80 @@
                 </label> </br>
             </div>
 
-            <div id="container-filtre">
-                <label> Nume: <input type="text" id="input-nume"></label>
-                <div> Livrare inclusa:
-                    <label>Da
-                        <input id="input-rad1" name="gr-rad" value="Da" type="radio"/>
-                    </label>
-                    <label>Nu
-                        <input id="input-rad2" name="gr-rad" value="Nu" type="radio"/>
-                    </label>
-                    <label>Toate
-                        <input id="input-rad3" checked name="gr-rad" value="Toate" type="radio"/>
-                    </label>
-                </div>
+            <div id="flex-filtre">
+                <div id="container-filtre" class="clasa-ascundere">
+                    <label for="input-nume" id="lbl-nume"> Nume: </label>
+                    <input type="text" id="input-nume">
+    
+    
+                    <div id="lbl-rad"> Livrare inclusa:</div>
+                    <div id="inp-rad">
+                        <label for="input-rad1" id="lbl-rad1">Da</label>
+                        <input class="rad-btn" id="input-rad1" name="gr-rad" value="Da" type="radio"/> <br>
+                        
+                        <label for="input-rad2" id="lbl-rad2">Nu</label>
+                        <input class="rad-btn" id="input-rad2" name="gr-rad" value="Nu" type="radio"/> <br>
         
-        
-                <% let currentYear = (new Date()).getFullYear() %> 
-                <label> An fabricatie minim: <span id="an-minim">(<%- locals.an_minim %>)</span> <input type="range" id="input-an-fabricatie" value="<%- locals.an_minim %>" min="<%- locals.an_minim %>" max="<%- currentYear %>"> <span id="infoRangeAn">(<%- currentYear %>)</span></label> </br>
-                
-                <label> Pret minim: <span id="pret-minim">(<%- locals.pret_minim %>)</span> <input type="range" id="input-pret" value="<%- locals.pret_minim %>" min="<%- locals.pret_minim %>" max="<%- locals.pret_maxim %>"> <span id="infoRangePret">(<%- locals.pret_minim %>)</span></label> </br>
-        
-                <label>Categorie produse:
+                        <label for="input-rad3" id="lbl-rad3">Toate</label>
+                        <input class="rad-btn" id="input-rad3" checked name="gr-rad" value="Toate" type="radio"/> <br>
+                    </div>
+            
+            
+                    <% let currentYear = (new Date()).getFullYear() %> 
+                    <label for="input-an-fabricatie" id="lbl-an"> An fabricatie minim: </label> 
+                    <div id="inp-an"><span id="an-minim">(<%- locals.an_minim %>)</span> <input type="range" id="input-an-fabricatie" value="<%- locals.an_minim %>" min="<%- locals.an_minim %>" max="<%- currentYear %>"> <span id="infoRangeAn">(<%- currentYear %>)</span></div>
+                    
+                    <label for="input-pret" id="lbl-pret"> Pret minim:</label> 
+                    <div id="inp-pret"> <span id="pret-minim">(<%- locals.pret_minim %>)</span> <input type="range" id="input-pret" value="<%- locals.pret_minim %>" min="<%- locals.pret_minim %>" max="<%- locals.pret_maxim %>"> <span id="infoRangePret">(<%- locals.pret_minim %>)</span></div>
+            
+                    <label for="input-categ-produse" id="lbl-categ-produse">Categorie produse:</label> 
                     <select id="input-categ-produse" multiple size="<%- Math.min(locals.optiuni.length + 1, 10) %> ">
                         <option id="select-multiplu-toate" selected value="toate">toate</option>
                         <% for (let opt of locals.optiuni) { %>
                             <option value="<%- opt.unnest %>"><%- opt.unnest %> </option>
                         <% } %>
                     </select>
-                </label> </br>
-        
-                <label>Autor anunt:
+            
+                    <label for="id-datalist" id="lbl-autor">Autor anunt:</label> 
                     <input list="id-datalist" id="input-autor-anunt">
                     <datalist id="id-datalist">
                         <% for (let userObj of locals.users) { %>
                             <option value="<%- userObj.autor_anunt %>"></option>
                         <%}  %> 
                     </datalist>
-                </label> </br>
-        
-                <div>
-                    <p>Producatori:</p>
-                    <label>Toti producatorii
-                        <input id="check-toate" checked name="gr-check" value="Toti" type="checkbox"/>
-                    </label> </br>
-                    <% for(let producatorObj of locals.producatori){%>
-                        <label><%- producatorObj.producator %>
-                            <input id="input-check<%- locals.producatori.indexOf(producatorObj.producator) %>" checked name="gr-check" value="<%- producatorObj.producator %>" type="checkbox"/>
+            
+                    <div id="lbl-producatori"><p>Producatori:</p></div>
+                    <div id="inp-producatori">
+                        <label>Toti producatorii
+                            <input id="check-toate" checked name="gr-check" value="Toti" type="checkbox"/>
                         </label> </br>
-                    <%} %> 
-                </div> 
-        
-                <label>Specificatii: 
+                        <% for(let producatorObj of locals.producatori){%>
+                            <label><%- producatorObj.producator %>
+                                <input id="input-check<%- locals.producatori.indexOf(producatorObj.producator) %>" checked name="gr-check" value="<%- producatorObj.producator %>" type="checkbox"/>
+                            </label> </br>
+                        <%} %>
+                    </div> 
+            
+                    <label for="input-specificatii" id="lbl-specificatii">Specificatii: </label>
                     <select id="input-specificatii">
                         <option id="select-toate" value="toate">Toate</option> 
                         <% for(let opt of locals.specificatii) {%>
                             <option value="<%- opt %>"><%- opt %></option>
                         <% } %> 
                     </select>
-                </label> </br>
-        
-                <label>Cuvinte cheie:
+            
+                    <label for="input-keywords" id="lbl-keywords">Cuvinte cheie:</label>
                     <textarea id="input-keywords" cols="50" rows="5" placeholder="Introduceti cuvinte cheie"></textarea>
-                </label>
-        
-                <p>
-                    <button id="filtrare">Filtreaza</button> 
-                    <button id="resetare">Reseteaza</button><br/>
-                    <button id="sortCresc">Sorteaza crescator</button>
-                    <button id="sortDescresc">Sorteaza descrescator</button>
-                </p>
-        
-                <p id="p-suma">Apăsați Alt+"c" pentru suma preturilor produselor afișate. </p>
+            
+                    <div id="butoane">
+                        <button class="buton" id="filtrare">Filtreaza</button> 
+                        <button class="buton" id="resetare">Reseteaza</button>
+                        <button class="buton" id="sortCresc">Sorteaza crescator</button>
+                        <button class="buton" id="sortDescresc">Sorteaza descrescator</button>
+                    </div>
+            
+                    <p id="p-suma" class="mesaj-succes">Apăsați Alt+"c" pentru suma preturilor produselor afișate. </p>
+                </div>
             </div>
         </section>
 

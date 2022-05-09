@@ -9,7 +9,8 @@ function paragrafEroare(mesaj) {
 		var sectiune = document.getElementsByTagName("section")[0];
 		sectiune.insertBefore(p, sectiune.lastChild);
 	} else {
-		p.classList[0] = "mesaj-eraore";
+		p_vechi.classList.remove(p_vechi.classList[0]);
+		p_vechi.classList.add("mesaj-eroare");
 		p_vechi.textContent = mesaj;
 	}
 }

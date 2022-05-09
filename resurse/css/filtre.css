@@ -15,11 +15,160 @@
 	color: var(--color6);
 }
 
-#container-filtre {
+.clasa-ascundere {
 	display: none;
 }
 
+#flex-filtre {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.grid-filtre {
+	display: grid;
+	grid-template-areas:
+		"l-nume f-nume"
+		"l-rad f-rad"
+		"l-an f-an"
+		"l-pret f-pret"
+		"l-categ-prod f-categ-prod"
+		"l-autor f-autor"
+		"l-producatori f-producatori"
+		"l-specificatii f-specificatii"
+		"l-keywords f-keywords"
+		"z-butoane z-butoane"
+		"z-suma z-suma"
+		"z-mesaj z-mesaj";
+	grid-template-columns: 1fr 3fr;
+	grid-gap: 20px;
+	width: 60%;
+}
+
+#lbl-nume {
+	grid-area: l-nume;
+}
 #input-nume {
-	border: 3px solid var(--color6);
-	border-radius: 5px;
+	grid-area: f-nume;
+}
+
+#lbl-rad {
+	grid-area: l-rad;
+}
+#inp-rad {
+	grid-area: f-rad;
+}
+
+#lbl-an {
+	grid-area: l-an;
+}
+#inp-an {
+	grid-area: f-an;
+}
+
+#lbl-prea {
+	grid-area: l-pret;
+}
+#inp-pret {
+	grid-area: f-pret;
+}
+
+#lbl-catreg-produse {
+	grid-area: l-categ-prod;
+}
+#inp-categ-produse {
+	grid-area: f-categ-prod;
+}
+
+#lbl-autor {
+	grid-area: l-autor;
+}
+#input-autor-anunt {
+	grid-area: f-autor;
+}
+
+#lbl-producatori {
+	grid-area: l-producatori;
+}
+#inp-producatori {
+	grid-area: f-producatori;
+}
+
+#lbl-specificatii {
+	grid-area: l-specificatii;
+}
+#input-specificatii {
+	grid-area: f-specificatii;
+}
+
+#lbl-keywords {
+	grid-area: l-keywords;
+}
+#input-keywords {
+	grid-area: f-keywords;
+}
+
+#butoane {
+	grid-area: z-butoane;
+}
+
+#p-suma {
+	grid-area: z-suma;
+	/* margin-bottom: 30px; */
+}
+
+#container-filtre > label,
+#lbl-producatori,
+#lbl-rad {
+	width: 100%;
+	text-align: right;
+}
+
+#container-filtre > input,
+#container-filtre > select,
+textarea {
+	width: 80%;
+	text-align: left;
+}
+
+input,
+#input-specificatii {
+	border-radius: 8px;
+	height: 2em;
+}
+
+input[type="checkbox"] {
+	height: 10px;
+}
+
+textarea {
+	height: 100px;
+	border-radius: 8px;
+}
+
+select {
+	border-radius: 8px;
+}
+
+#butoane {
+	text-align: center;
+}
+
+.buton {
+	width: auto;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
 }
