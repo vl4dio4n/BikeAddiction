@@ -302,13 +302,12 @@ app.post("/inreg", function (req, res) {
 		caleUtilizator = path.join(__dirname, "poze_uploadate", username);
 		if (!fs.existsSync(caleUtilizator)) {
 			fs.mkdirSync(caleUtilizator);
-			fs.mkdirSync(path.join.apply(caleUtilizator, "produse"));
+			fs.mkdirSync(path.join(caleUtilizator, "produse"));
 		}
 		var file_name = fisier.originalFilename.split(".");
 		fisier.filepath = path.join(caleUtilizator, `_poza.${file_name[file_name.length - 1]}`);
 	});
 	formular.on("file", function (nume, fisier) {
-		console.log(fisier);
 		if (fisier.size == 0) {
 			fs.unlinkSync(fisier.filepath);
 			return;
@@ -383,12 +382,18 @@ app.post("/stergere_poza_profil", function (req, res) {
 				if (rezUpdate.rowCount == 0) {
 					res.redirect("/useri");
 				} else {
-					// TO DO de sters pozele din folder + afisat mesaj la user
+					// afisat mesaj la user
+
 					querySelect = `select username, email from utilizatori where id = ${parseInt(campuriText.id_utiliz)}`;
 					client.query(querySelect, function (err, rezQuery) {
 						if (err) console.log(err);
 						else {
 							let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
+							var caleUtilizator = path.join(__dirname, "poze_uploadate", rezQuery.rows[0].username);
+							for (let fileName of fs.readdirSync(caleUtilizator))
+								if (fileName != "produse") {
+									fs.unlinkSync(path.join(caleUtilizator, fileName));
+								}
 							trimiteMail(rezQuery.rows[0].email, "Ne pare rau", "text", `<h1>Salut</h1><p>Ne pare rau insa am decis sa-ti stergem poza de profil a contului <span style="color: blue; text-decoration: underline;">${rezQuery.rows[0].username}</span> de pe site-ul <a href=${link}>BikeAddiction</a></p>`);
 							res.redirect("/useri");
 						}
@@ -432,8 +437,6 @@ app.post("/profil", function (req, res) {
 		var eroare = verificaFormular(campuriText, "profil");
 		if (eroare != "") res.render("pagini/profil", { type: false, raspuns: eroare });
 		else {
-			//TO DO update poza profil
-			console.log(campuriFile, "\n", campuriFile.poza.size > 0);
 			var queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', email = '${campuriText.email}', 
 							culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere}
 							where parola='${criptareParola}' and username='${username}'`;
@@ -467,12 +470,15 @@ app.post("/profil", function (req, res) {
 	});
 	formular.on("fileBegin", function (nume, fisier) {
 		var caleUtilizator = path.join(__dirname, "poze_uploadate", username);
+		for (let fileName of fs.readdirSync(caleUtilizator))
+			if (fileName[0] == "_") {
+				fs.unlinkSync(path.join(caleUtilizator, fileName));
+				break;
+			}
 		let file_name = fisier.originalFilename.split(".");
 		fisier.filepath = path.join(caleUtilizator, `_poza.${file_name[file_name.length - 1]}`);
 	});
 	formular.on("file", function (nume, fisier) {
-		console.log("I was here");
-		console.log("Step 2", fisier);
 		if (fisier.size == 0) {
 			fs.unlinkSync(fisier.filepath);
 			return;
@@ -480,17 +486,14 @@ app.post("/profil", function (req, res) {
 		var caleUtilizator = path.join(__dirname, "poze_uploadate", username);
 		for (let fileName of fs.readdirSync(caleUtilizator))
 			if (fileName[0] != "_" && fileName != "produse") {
-				console.log("fileName = ", fileName);
 				fs.unlinkSync(path.join(caleUtilizator, fileName));
 			}
 		var queryUpdate = `update utilizatori set poza_profil = true where username='${username}'`;
 		client.query(queryUpdate, function (err, rezUpdate) {});
 		var file_name = fisier.originalFilename.split(".");
-		console.log("Step 3");
 		convertImage(username, `_poza.${file_name[file_name.length - 1]}`);
-		req.session.utilizator.cale_poza_mica = path.join("poze_uploadate", req.session.utilizator.username, "poza-mica.png");
-		req.session.utilizator.cale_poza_mare = path.join("poze_uploadate", req.session.utilizator.username, "poza.png");
-		console.log("Step 4");
+		req.session.utilizator.cale_poza_mica = path.join("poze_uploadate", username, "poza-mica.png");
+		req.session.utilizator.cale_poza_mare = path.join("poze_uploadate", username, "poza.png");
 	});
 });
 
@@ -505,24 +508,31 @@ app.post("/stergere_cont", function (req, res) {
 
 	formular.parse(req, function (err, campuriText, campuriFile) {
 		var criptareParola = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
-		var queryDelete = `delete from utilizatori where parola='${criptareParola}' and username='${username}'`;
-		client.query(queryDelete, function (err, rez) {
-			if (err) {
-				console.log(err);
-				randeazaEroare(res, -1, "Eroare", "Eroare baza date. Incercati mai tarziu.");
-				return;
-			}
-			if (rez.rowCount == 0) {
-				res.render("pagini/profil", { type: false, raspuns: "Contul nu a putut fi sters. Verificati parola introdusa.", flag: true });
-				return;
-			} else {
-				let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
-				trimiteMail(req.session.utilizator.email, "Stergere cont", "text", `<h1>Salut!</h1><p>Te informam ca ti-ai sters contul <span style="color: blue; text-decoration: underline;">${req.session.utilizator.username}</span> de pe site-ul <a href="${link}">BikeAddiction</a>.</p><p>Ne pare rau ca ai luat aceasta decizie dar speram ca vei reveni asupra ei.</p>`);
-				req.session.destroy();
-				res.locals.utilizator = null;
-				res.render("pagini/logout", { raspuns: "Contul a fost sters!" });
-				//TO DO stergere folder utilizator
-			}
+		var queryDelete1 = `delete from accesari where user_id = 
+							(
+								select id from utilizatori
+								where parola='${criptareParola}' and username='${username}'
+							)`;
+		client.query(queryDelete1, function (err, rez) {
+			var queryDelete2 = `delete from utilizatori where parola='${criptareParola}' and username='${username}'`;
+			client.query(queryDelete2, function (err, rez) {
+				if (err) {
+					console.log(err);
+					randeazaEroare(res, -1, "Eroare", "Eroare baza date. Incercati mai tarziu.");
+					return;
+				}
+				if (rez.rowCount == 0) {
+					res.render("pagini/profil", { type: false, raspuns: "Contul nu a putut fi sters. Verificati parola introdusa.", flag: true });
+					return;
+				} else {
+					let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
+					trimiteMail(req.session.utilizator.email, "Stergere cont", "text", `<h1>Salut!</h1><p>Te informam ca ti-ai sters contul <span style="color: blue; text-decoration: underline;">${req.session.utilizator.username}</span> de pe site-ul <a href="${link}">BikeAddiction</a>.</p><p>Ne pare rau ca ai luat aceasta decizie dar speram ca vei reveni asupra ei.</p>`);
+					fs.rmdirSync(path.join(__dirname, "poze_uploadate", username), { recursive: true });
+					req.session.destroy();
+					res.locals.utilizator = null;
+					res.render("pagini/logout", { raspuns: "Contul a fost sters!" });
+				}
+			});
 		});
 	});
 });
@@ -533,6 +543,7 @@ app.post("/creeaza-anunt", function (req, res) {
 		return;
 	}
 	var username = req.session.utilizator.username;
+	var id_user = req.session.utilizator.id;
 	var formular = new formidable.IncomingForm();
 
 	formular.parse(req, function (req, campuriText, campuriFisier) {
@@ -541,14 +552,48 @@ app.post("/creeaza-anunt", function (req, res) {
 		var eroare = verificaFormular(campuriText, "anunt");
 		if (eroare != "") res.render("pagini/creeaza-anunt", { type: false, raspuns: eroare });
 		else {
-			// am presupus ca utilizatorul va trimite mereu o imagine
 			let caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
-			let calePoza = `${username}/poze_uplodata/produse/produs_${fs.readdirSync(caleProdus).length}`;
-			var queryInsert = `insert into produse (nume, pret, an_fabricatie, producator, categ_produse, descriere, autor_anunt, email, telefon, livrare, imagine) 
+			let calePoza = `${username}/poze_uploadate/produse/produs_${fs.readdirSync(caleProdus).length}.png`;
+
+			let arrSpecificatii = campuriText.specificatii.split(",");
+			let strSpecificatii = "";
+			for (let spec of arrSpecificatii)
+				if (spec.trim() != "") {
+					if (strSpecificatii != "") strSpecificatii += ", ";
+					strSpecificatii += `"${spec.trim()}"`;
+				}
+			console.log(strSpecificatii);
+			console.log(id_user);
+			var queryInsert = `insert into produse (nume, pret, an_fabricatie, producator, categ_produse, specificatii, descriere, autor_anunt, email, telefon, livrare, imagine, user_id) 
 					values ('${campuriText.nume}', ${campuriText.pret}, ${campuriText.an}, '${campuriText.producator}', '${campuriText.categ_produse}', 
-					'${campuriText.descriere}', '${username}', '${campuriText.email}', '${campuriText.telefon}', ${campuriText.livrare}, '${calePoza}')`;
-			res.render("pagini/creeaza-anunt", { type: true, raspuns: "Nu s-a intamplat nimic" });
+					'{${strSpecificatii}}', '${campuriText.descriere.trim()}', '${username}', '${campuriText.email}', '${campuriText.telefon}', ${campuriText.livrare}, '${calePoza}', ${id_user})`;
+
+			console.log(queryInsert);
+			client.query(queryInsert, function (err, rezInserare) {
+				if (err) {
+					console.log(err);
+					res.render("pagini/creeaza-anunt", { type: false, raspuns: "Eroare baza de date" });
+				} else {
+					res.render("pagini/creeaza-anunt", { type: true, raspuns: "Produsul a fost adaugat cu succes" });
+				}
+			});
 		}
+	});
+	formular.on("fileBegin", function (nume, fisier) {
+		caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
+		var file_name = fisier.originalFilename.split(".");
+		fisier.filepath = path.join(caleProdus, `_produs.${file_name[file_name.length - 1]}`);
+	});
+	formular.on("file", function (nume, fisier) {
+		let calePoza = path.join(__dirname, "poze_uploadate", username, "produse", `produs_${fs.readdirSync(caleProdus).length}.png`);
+		if (fisier.size == 0) {
+			fs.unlinkSync(fisier.filepath);
+			let caleSrc = path.join(__dirname, "resurse", "imagini", "altele", "produs.png");
+			fs.copyFileSync(caleSrc, calePoza);
+			return;
+		}
+		var file_name = fisier.originalFilename.split(".");
+		convertImageProdus(username, `_produs.${file_name[file_name.length - 1]}`);
 	});
 });
 
@@ -646,11 +691,22 @@ function convertImage(username, file) {
 	let old_path = path.join(__dirname, "poze_uploadate", username, file);
 	[nume, extensie] = file.slice(1).split(".");
 	let new_path = path.join(__dirname, "poze_uploadate", username, nume + ".png");
+	sharp.cache(false);
 	sharp(old_path).resize({ height: 300, width: 300 }).toFile(new_path);
 	new_path = path.join(__dirname, "poze_uploadate", username, nume + "-mica.png");
 	sharp(old_path).resize({ height: 50, width: 50 }).toFile(new_path);
-	let caleUtilizator = path.join(__dirname, "poze_uploadate", username, file);
-	fs.unlinkSync(caleUtilizator);
+}
+
+function convertImageProdus(username, file) {
+	let caleProduse = path.join(__dirname, "poze_uploadate", username, "produse");
+	let old_path = path.join(caleProduse, file);
+	[nume, extensie] = file.slice(1).split(".");
+	let new_path = path.join(caleProduse, `produs_${fs.readdirSync(caleProduse).length}.png`);
+	sharp(old_path)
+		.resize({ height: 400, width: 400 })
+		.toFile(new_path, function (err, info) {
+			fs.unlinkSync(old_path);
+		});
 }
 
 function creeazaImagini() {
