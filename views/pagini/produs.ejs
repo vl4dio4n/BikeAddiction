@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <th scope = "row" class="celula-tabel-produs">Autor anunt</th>
-                                    <td class="celula-tabel-produs"><%- locals.prod.autor_anunt %></td>
+                                    <td class="celula-tabel-produs"><a href="/utilizator/<%- locals.prod.autor_anunt %>" class="link"><%- locals.prod.autor_anunt %></a></td>
                                 </tr>
                                 <tr>
                                     <th scope = "row" class="celula-tabel-produs">Data adaugare</th>
@@ -61,17 +61,28 @@
                             </tbody>
                         </table>
                         <figure class="imag-produs">
-                            <img  src="/resurse/imagini/produse/resized/<%- locals.prod.imagine %>" alt="[imagine <%- locals.prod.nume %>]" />
+                            <img  src="/<%- locals.prod.imagine %>" alt="[imagine <%- locals.prod.nume %>]" />
                         </figure>
                         <div class="descriere-produs">
                             <h3>Descriere</h3>
                             <p><%- locals.prod.descriere %></p>
                         </div>
                         <div class="categorie-produs">
-                            <p> <span style="font-weight: bold;">Categorii: </span> 
-                                <span class="tag-produs"><%- locals.prod.categ_produse %></span> 
-                                <%- locals.prod.categ_biciclete ? `<span class="tag-produs">${locals.prod.categ_biciclete}<span>` : ""%>
-                            </p>
+                            <h3>Categorii: </h3> 
+                             <p><span class="tag-produs"><%- locals.prod.categ_produse %></span> </p>
+                        </div>
+                        <div class="contact-autor">
+                            <h3>Contact:</h3>
+                            <% if(locals.prod.telefon){ %> 
+                                <p><span class="fas fa-mobile-alt"></span> <span style="font-weight: bold;">Telefon: </span><a href="tel:<%- locals.prod.telefon %>" class="link"><%- locals.prod.telefon %></a></p>
+                            <% } else {%>
+                                <p><span class="fas fa-mobile-alt"></span> <span style="font-weight: bold;">Telefon: </span>Nespecificat</p>
+                            <% } %>
+                            <% if(locals.prod.email){ %> 
+                                <p><span class="fas fa-envelope"></span> <span style="font-weight: bold;">Email: </span><a href="mailto:<%- locals.prod.email %>" class="link"><%- locals.prod.email %></a></p>
+                            <% } else {%>
+                                <p><span class="fas fa-envelope"></span> <span style="font-weight: bold;">Email: </span>Nespecificat</p>
+                            <% } %> 
                         </div>
                     </div>
                 </article>

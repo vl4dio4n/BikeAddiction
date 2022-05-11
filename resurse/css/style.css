@@ -301,7 +301,7 @@ p small {
 	border-radius: 10px;
 	padding: 15px;
 	padding-bottom: 5px;
-	width: 200px;
+	width: 225px;
 	position: absolute;
 	top: var(--margine-main);
 	right: var(--margine-main);
@@ -324,13 +324,21 @@ p small {
 	line-height: 0.8em;
 }
 
-.logout-profil {
+.username-profil:hover {
+	transition: all 0.1s linear;
+	text-decoration: underline;
+}
+
+.linie-profil {
 	grid-area: z-logout;
-	color: var(--color6);
-	text-decoration: none;
 	font-size: 0.7em;
 	text-align: left;
 	line-height: 0.8em;
+	color: var(--color6);
+}
+.logout-profil {
+	color: var(--color6);
+	text-decoration: none;
 }
 
 .contianer-imag-profil-mica {

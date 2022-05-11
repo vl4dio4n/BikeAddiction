@@ -8,8 +8,8 @@
     <% if(locals.utilizator) {%> 
         <div id="profil-mic">
             <p class="nume-profil"><%- locals.utilizator.nume %> <%- locals.utilizator.prenume %> </p>
-            <a href="/profil" class="username-profil"><i class="fas fa-user"></i> <%- locals.utilizator.username %> </a>
-            <a href="/logout" class="logout-profil"><i class="fas fa-sign-out"></i> Logout</a>
+            <a href="/utilizator/<%- locals.utilizator.username %>" class="username-profil"><i class="fas fa-user"></i> <%- locals.utilizator.username %> </a>
+            <p class="linie-profil"><a href="/logout" class="logout-profil"><i class="fas fa-sign-out"></i> Logout</a> | <a href="/cont" class="logout-profil">Contul meu</a></p>
             <figure class="contianer-imag-profil-mica">
                 <img class="imag-mica-profil" src="/<%- locals.utilizator.cale_poza_mica %>" alt="[imagine profil]" />
             </figure>
@@ -42,18 +42,7 @@
             <ul class="submeniu">
                 
                 <% for(let categProdus of locals.categProduse){  %>
-                    <li><a href="/produse?tip=<%- categProdus %>"><%- categProdus[0].toUpperCase() + categProdus.slice(1) %> </a>
-                    <% if(categProdus == "biciclete"){ %>   
-                        <ul class="submeniu">
-                            <li><a href="sosea.html">Sosea</a></li>
-                            <li><a href="mtb.html"><abbr title="Mountain Bike">MTB</abbr></a></li>
-                            <li><a href="trekking.html">Trekking</a></li>
-                            <li><a href="electrice.html">Electrice</a></li>
-                            <li><a href="bmx.html"><abbr title="bicycle, motocross, with X standing for cross">BMX</abbr></a></li>
-                            <li><a href="copii.html">Copii</a></li>
-                        </ul>
-                    <% } %>  
-                    </li>
+                    <li><a href="/produse?tip=<%- categProdus %>"><%- categProdus[0].toUpperCase() + categProdus.slice(1) %> </a></li>
                 <% } %>  
             </ul>
         </li>
@@ -67,9 +56,9 @@
             <li><a href="/useri">Users</a><div></div></li>
         <% } %> 
         <% if(locals.utilizator){ %> 
-            <li><a href="/profil"><%- locals.utilizator.username %></a><div></div>
+            <li><a href="/utilizator/<%- locals.utilizator.username %>"><%- locals.utilizator.username %></a><div></div>
                 <ul class="submeniu">
-                    <li><a href="/profil">Profil</a></li>
+                    <li><a href="/cont">Contul meu</a></li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </li>

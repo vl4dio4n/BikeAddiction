@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ro">
+	<head>
+		<title>Profil</title>
+		<%- include("../fragmente/head") %>
+        
+		<link rel="stylesheet" type="text/css" href="/resurse/css/pagina-inregistrare.css"/>
+		<link rel="stylesheet" type="text/css" href="/resurse/css/pagina-cont.css"/>
+		<script type="text/javascript" src=/resurse/js/cont.js></script>
+
+		<script>
+
+			// populez inputurile din pagina de profil cu datele din tabel (incarcate prin EJS)
+			window.addEventListener("DOMContentLoaded", function(){
+				document.getElementById("inp-username").value="<%= locals.utilizator.username %>";
+				document.getElementById("inp-username").readOnly=true;
+				document.getElementById("inp-nume").value="<%= locals.utilizator.nume %>";
+				document.getElementById("inp-prenume").value="<%= locals.utilizator.prenume %>";
+				document.getElementById("inp-email").value="<%= locals.utilizator.email %>";
+				document.getElementById("inp-problema-vedere").checked = "<%= locals.utilizator.problema_vedere %>" == "true";
+				var optiuni=document.getElementById("sel-culoare").options
+				for (let opt of optiuni)
+					if (opt.value=="<%= locals.utilizator.culoare_chat %>")
+						opt.selected=true;
+			});
+		</script>
+	</head>
+	<body class="container">
+		<header>
+			<%- include("../fragmente/header") %>
+		</header>
+		<main>
+			<section class="form">
+				<h2>Contul meu</h2>
+				<%- include("../fragmente/formular-profil",{action:"/cont"}) %>
+				<% if(locals.type == true){ %>
+					<p class="mesaj-succes"><%- locals.raspuns %></p>
+				<% } else if(locals.type == false && !locals.flag){%>
+					<p class="mesaj-eroare"><%- locals.raspuns %></p>
+				<% } %> 
+			</section>
+			<section class="form" id="stergere">
+				<h2>Sterge contul</h2>
+				<%- include("../fragmente/formular-stergere-cont",{action:"/stergere_cont"}) %>
+				<% if(locals.type == true && locals.flag){ %>
+					<p class="mesaj-succes"><%- locals.raspuns %></p>
+				<% } else if(locals.type == false && locals.flag){%>
+					<p class="mesaj-eroare"><%- locals.raspuns %></p>
+				<% } %> 
+			</section>
+		</main>
+		
+		<%- include("../fragmente/footer") %>
+		
+	</body>
+</html>

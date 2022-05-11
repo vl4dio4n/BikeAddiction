@@ -80,6 +80,17 @@ section#art-produs {
 	background-color: rgb(245, 255, 100, 0.6);
 }
 
+.link {
+	text-decoration: none;
+	color: var(--color6);
+}
+
+.link:hover {
+	transition: all 0.1s linear;
+	text-decoration: underline;
+	color: black;
+}
+
 @media screen and (max-width: 700px) {
 	.container-produs {
 		display: grid;

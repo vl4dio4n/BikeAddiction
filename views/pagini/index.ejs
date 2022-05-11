@@ -222,10 +222,11 @@
                         <% for(let utiliz of locals.utiliz_online) {%>
                             <div class = "profil-utiliz">
                                 <p class="nume-profil"><%- utiliz.nume %> <%- utiliz.prenume %> </p>
-                                <p class="username-profil"><i class="fas fa-user"></i> <%- utiliz.username %> </p>
+                                <a href="/utilizator/<%- utiliz.username %>" class="username-profil"><i class="fas fa-user"></i> <%- utiliz.username %> </a>
                                 <figure class="contianer-imag-profil-mica">
                                     <% 
                                     let cale_poza = "resurse/imagini/altele/poza-mica.png";
+                                    console.log(utiliz.poza_profil);
                                     if(utiliz.poza_profil)
                                         cale_poza = `poze_uploadate/${utiliz.username}/poza-mica.png`; 
                                     %>

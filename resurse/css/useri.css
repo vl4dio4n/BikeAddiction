@@ -49,6 +49,17 @@
 	border: 2px solid var(--color6);
 }
 
+.link {
+	text-decoration: none;
+	color: var(--color6);
+}
+
+.link:hover {
+	transition: all 0.1s linear;
+	text-decoration: underline;
+	color: black;
+}
+
 .buton {
 	width: auto;
 	height: 40px;

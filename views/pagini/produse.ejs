@@ -105,7 +105,7 @@
                     <h3 class="nume">Nume: <a href="/produs/<%-prod.id %>" ><span class="val-nume"><%- prod.nume%></span></a></h3>
                     <div class="info-produs">
                         <p class="pret">Pret: <span class="val-pret"><%- prod.pret%></span></p>
-                        <p class="autor-anunt">Autor anunt: <span class="val-autor-anunt"><%- prod.autor_anunt%></span></p>
+                        <p class="autor-anunt">Autor anunt: <a class="val-autor-anunt" href="/utilizator/<%-prod.autor_anunt %>"><%- prod.autor_anunt%></a></p>
                         <p class="producator">Producator: <span class="val-producator"><%- prod.producator%></span></p>
                         <p class="an-fabricatie">An fabricatie: <span class="val-an-fabricatie"><%- prod.an_fabricatie%></span></p>
                         <p class="livrare">Livrare inclusa: <span class="val-livrare"><%- prod.livrare ? "Da": "Nu" %></span></p>
@@ -114,12 +114,18 @@
                     </div>
                     <p class="categ-produse">Categorie: <span class="val-categ-produse"><%- prod.categ_produse%></span></p>
                     <figure>
-                        <a href="/produs/<%-prod.id %>" ><img src="/resurse/imagini/produse/resized/<%- prod.imagine %>" style="width:50%;height:auto;" alt="[imagine <%- prod.nume %>]" /></a>
+                        <a href="/produs/<%-prod.id %>" ><img src="/<%- prod.imagine %>" style="width:50%;height:auto;" alt="[imagine <%- prod.nume %>]" /></a>
                     </figure>
-                    <label class="selecteaza-cos">
-                        Selectează:<br/>
-                        <input type="checkbox" class="select-cos" value="<%- prod.id %>" autocomplete="off">
-                    </label>
+                    <% if(locals.utilizator && prod.autor_anunt == locals.utilizator.username) { %> 
+                        <form action="/editare_anunt" method="get" enctype="multipart/form-data">
+                            <input class="buton1" type="submit" value="Editeaza anuntul">
+                        </form>
+                    <% } else {%>        
+                        <label class="selecteaza-cos">
+                            Selectează:<br/>
+                            <input type="checkbox" class="select-cos" value="<%- prod.id %>" autocomplete="off">
+                        </label>
+                    <% } %> 
                 </section>
             <% }%>
         </div>

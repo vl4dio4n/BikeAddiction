@@ -312,8 +312,6 @@ app.post("/inreg", function (req, res) {
 			fs.unlinkSync(fisier.filepath);
 			return;
 		}
-		var queryUpdate = `update utilizatori set poza_profil = true where username='${username}'`;
-		client.query(queryUpdate, function (err, rezUpdate) {});
 		var file_name = fisier.originalFilename.split(".");
 		convertImage(username, `_poza.${file_name[file_name.length - 1]}`);
 	});
@@ -404,13 +402,36 @@ app.post("/stergere_poza_profil", function (req, res) {
 	});
 });
 
+app.get("/utilizator/:username", function (req, res) {
+	username = req.params.username;
+	var querySelect1 = `select * from produse where autor_anunt = '${username}'`;
+
+	client.query(querySelect1, function (err, rezQuery) {
+		res.locals.produse = rezQuery.rows;
+		var querySelect2 = `select nume, prenume, poza_profil from utilizatori
+							where username = '${username}'`;
+		client.query(querySelect2, function (err, rezQuery) {
+			res.locals.username_profil = username;
+			res.locals.nume = rezQuery.rows[0].nume;
+			res.locals.prenume = rezQuery.rows[0].prenume;
+			res.locals.cale_poza = rezQuery.rows[0].poza_profil ? `poze_uploadate/${username}/poza.png` : "resurse/imagini/altele/poza.png";
+			res.render("pagini/profil");
+		});
+	});
+});
+
 app.get("/confirmare_mail/:token1/:username/:token2", function (req, res) {
-	var comandaSelect = `update utilizatori set confirmat_mail = true where username = '${req.params.username}' and cod = '${req.params.token2}'`;
+	var username = req.params.username;
+	var comandaSelect = `update utilizatori set confirmat_mail = true where username = '${username}' and cod = '${req.params.token2}'`;
 	client.query(comandaSelect, function (err, rezUpdate) {
 		if (err) {
 			console.log(err);
 			randeazaEroare(res, 2);
 		} else {
+			if (fs.readdirSync(path.join(__dirname, "poze_uploadate", username)).length > 1) {
+				var queryUpdate = `update utilizatori set poza_profil = true where username='${username}'`;
+				client.query(queryUpdate, function (err, rezUpdate) {});
+			}
 			if (rezUpdate.rowCount == 1) {
 				res.render("pagini/confirmare");
 			} else {
@@ -420,8 +441,8 @@ app.get("/confirmare_mail/:token1/:username/:token2", function (req, res) {
 	});
 });
 
-app.post("/profil", function (req, res) {
-	console.log("profil");
+app.post("/cont", function (req, res) {
+	console.log("Cont");
 	if (!req.session.utilizator) {
 		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
 		return;
@@ -434,8 +455,8 @@ app.post("/profil", function (req, res) {
 		var criptareParolaNoua = crypto.scryptSync(campuriText.parola_noua, parolaServer, 64).toString("hex");
 		campuriText["problema_vedere"] = campuriText["problema_vedere"] ? true : false;
 
-		var eroare = verificaFormular(campuriText, "profil");
-		if (eroare != "") res.render("pagini/profil", { type: false, raspuns: eroare });
+		var eroare = verificaFormular(campuriText, "cont");
+		if (eroare != "") res.render("pagini/cont", { type: false, raspuns: eroare });
 		else {
 			var queryUpdate = `update utilizatori set nume='${campuriText.nume}', prenume = '${campuriText.prenume}', email = '${campuriText.email}', 
 							culoare_chat = '${campuriText.culoare_chat}', problema_vedere = ${campuriText.problema_vedere}
@@ -452,7 +473,7 @@ app.post("/profil", function (req, res) {
 				}
 				console.log(rez.rowCount);
 				if (rez.rowCount == 0) {
-					res.render("pagini/profil", { type: false, raspuns: "Update-ul nu s-a realizat. Verificati parola introdusa." });
+					res.render("pagini/cont", { type: false, raspuns: "Update-ul nu s-a realizat. Verificati parola introdusa." });
 					return;
 				} else {
 					req.session.utilizator.nume = campuriText.nume;
@@ -461,10 +482,10 @@ app.post("/profil", function (req, res) {
 					req.session.utilizator.culoare_chat = campuriText.culoare_chat;
 					req.session.utilizator.problema_vedere = campuriText.problema_vedere;
 					let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
-					trimiteMail(campuriText.email, "Ti-ai schimbat profilul", "text", `<h1>Salut!</h1><p>Te informam ca ai schimbat profilul de utilizator al contului <span style="color: blue; text-decoration: underline;">${username}</span> pe site-ul <a href="${link}">BikeAddiction</a></p><p>Noile tale date sunt:</p><ul><li>Nume: ${campuriText.nume}</li><li>Prenume: ${campuriText.prenume}</li><li>Email: ${campuriText.email}</li><li>Culoare Chat: ${campuriText.culoare_chat}</li><li>Problema de vedere: ${campuriText.problema_vedere}</li></ul>`);
+					trimiteMail(campuriText.email, "Ti-ai schimbat contul", "text", `<h1>Salut!</h1><p>Te informam ca ai schimbat profilul de utilizator al contului <span style="color: blue; text-decoration: underline;">${username}</span> pe site-ul <a href="${link}">BikeAddiction</a></p><p>Noile tale date sunt:</p><ul><li>Nume: ${campuriText.nume}</li><li>Prenume: ${campuriText.prenume}</li><li>Email: ${campuriText.email}</li><li>Culoare Chat: ${campuriText.culoare_chat}</li><li>Problema de vedere: ${campuriText.problema_vedere}</li></ul>`);
 				}
 
-				res.render("pagini/profil", { type: true, raspuns: "Update-ul s-a realizat cu succes." });
+				res.render("pagini/cont", { type: true, raspuns: "Update-ul s-a realizat cu succes." });
 			});
 		}
 	});
@@ -498,7 +519,6 @@ app.post("/profil", function (req, res) {
 });
 
 app.post("/stergere_cont", function (req, res) {
-	console.log("profil");
 	if (!req.session.utilizator) {
 		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
 		return;
@@ -522,7 +542,7 @@ app.post("/stergere_cont", function (req, res) {
 					return;
 				}
 				if (rez.rowCount == 0) {
-					res.render("pagini/profil", { type: false, raspuns: "Contul nu a putut fi sters. Verificati parola introdusa.", flag: true });
+					res.render("pagini/cont", { type: false, raspuns: "Contul nu a putut fi sters. Verificati parola introdusa.", flag: true });
 					return;
 				} else {
 					let link = `${obGlobal.protocol}${obGlobal.numeDomeniu}`;
@@ -545,15 +565,17 @@ app.post("/creeaza-anunt", function (req, res) {
 	var username = req.session.utilizator.username;
 	var id_user = req.session.utilizator.id;
 	var formular = new formidable.IncomingForm();
+	var eroareBD = false;
 
 	formular.parse(req, function (req, campuriText, campuriFisier) {
 		campuriText["livrare"] = campuriText["livrare"] ? true : false;
 
 		var eroare = verificaFormular(campuriText, "anunt");
+
 		if (eroare != "") res.render("pagini/creeaza-anunt", { type: false, raspuns: eroare });
 		else {
-			let caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
-			let calePoza = `${username}/poze_uploadate/produse/produs_${fs.readdirSync(caleProdus).length}.png`;
+			var caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
+			var calePoza = `poze_uploadate/${username}/produse/produs_${fs.readdirSync(caleProdus).length}.png`;
 
 			let arrSpecificatii = campuriText.specificatii.split(",");
 			let strSpecificatii = "";
@@ -572,6 +594,7 @@ app.post("/creeaza-anunt", function (req, res) {
 			client.query(queryInsert, function (err, rezInserare) {
 				if (err) {
 					console.log(err);
+					eroareBD = true;
 					res.render("pagini/creeaza-anunt", { type: false, raspuns: "Eroare baza de date" });
 				} else {
 					res.render("pagini/creeaza-anunt", { type: true, raspuns: "Produsul a fost adaugat cu succes" });
@@ -588,8 +611,10 @@ app.post("/creeaza-anunt", function (req, res) {
 		let calePoza = path.join(__dirname, "poze_uploadate", username, "produse", `produs_${fs.readdirSync(caleProdus).length}.png`);
 		if (fisier.size == 0) {
 			fs.unlinkSync(fisier.filepath);
-			let caleSrc = path.join(__dirname, "resurse", "imagini", "altele", "produs.png");
-			fs.copyFileSync(caleSrc, calePoza);
+			if (!eroareBD) {
+				let caleSrc = path.join(__dirname, "resurse", "imagini", "altele", "produs.png");
+				fs.copyFileSync(caleSrc, calePoza);
+			}
 			return;
 		}
 		var file_name = fisier.originalFilename.split(".");
@@ -703,7 +728,7 @@ function convertImageProdus(username, file) {
 	[nume, extensie] = file.slice(1).split(".");
 	let new_path = path.join(caleProduse, `produs_${fs.readdirSync(caleProduse).length}.png`);
 	sharp(old_path)
-		.resize({ height: 400, width: 400 })
+		.resize({ height: 300, width: 300 })
 		.toFile(new_path, function (err, info) {
 			fs.unlinkSync(old_path);
 		});

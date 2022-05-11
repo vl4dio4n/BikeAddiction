@@ -3,51 +3,57 @@
 	<head>
 		<title>Profil</title>
 		<%- include("../fragmente/head") %>
-        
-		<link rel="stylesheet" type="text/css" href="/resurse/css/pagina-inregistrare.css"/>
-		<link rel="stylesheet" type="text/css" href="/resurse/css/pagina-profil.css"/>
-		<script type="text/javascript" src=/resurse/js/profil.js></script>
-
-		<script>
-
-			// populez inputurile din pagina de profil cu datele din tabel (incarcate prin EJS)
-			window.addEventListener("DOMContentLoaded", function(){
-				document.getElementById("inp-username").value="<%= locals.utilizator.username %>";
-				document.getElementById("inp-username").readOnly=true;
-				document.getElementById("inp-nume").value="<%= locals.utilizator.nume %>";
-				document.getElementById("inp-prenume").value="<%= locals.utilizator.prenume %>";
-				document.getElementById("inp-email").value="<%= locals.utilizator.email %>";
-				document.getElementById("inp-problema-vedere").checked = "<%= locals.utilizator.problema_vedere %>" == "true";
-				var optiuni=document.getElementById("sel-culoare").options
-				for (let opt of optiuni)
-					if (opt.value=="<%= locals.utilizator.culoare_chat %>")
-						opt.selected=true;
-			});
-		</script>
+        <link rel="stylesheet" type="text/css" href="/resurse/css/pagina-produse.css"/>
+		<link rel="stylesheet" type="text/css" href="/resurse/css/profil.css"/>
 	</head>
 	<body class="container">
 		<header>
 			<%- include("../fragmente/header") %>
 		</header>
 		<main>
-			<section class="form">
-				<h2>Profil</h2>
-				<%- include("../fragmente/formular-profil",{action:"/profil"}) %>
-				<% if(locals.type == true){ %>
-					<p class="mesaj-succes"><%- locals.raspuns %></p>
-				<% } else if(locals.type == false && !locals.flag){%>
-					<p class="mesaj-eroare"><%- locals.raspuns %></p>
-				<% } %> 
+			<section id="sectiune-profil">
+                <h2>Profil <%- locals.username_profil %></h2>
+                <div id="container-profil">
+                    <div id="info-user">
+                        <p><span>Nume:</span> <%- locals.nume %></p>
+                        <p><span>Prenume:</span> <%- locals.prenume %></p>
+                        <p><span>Nr. anunturi:</span> <%- locals.produse.length %></p>
+                    </div>
+                    <figure id="contianer-imag-mare-profil">
+                        <img id="imag-mare-profil" src="/<%- locals.cale_poza %>" alt="[imagine profil]" />
+                    </figure>
+                </div>
 			</section>
-			<section class="form" id="stergere">
-				<h2>Sterge contul</h2>
-				<%- include("../fragmente/formular-stergere-cont",{action:"/stergere_cont"}) %>
-				<% if(locals.type == true && locals.flag){ %>
-					<p class="mesaj-succes"><%- locals.raspuns %></p>
-				<% } else if(locals.type == false && locals.flag){%>
-					<p class="mesaj-eroare"><%- locals.raspuns %></p>
-				<% } %> 
-			</section>
+            <div id="grid-produse">
+                <% for( let prod of locals.produse) { %>
+                    <section class="produs">
+                        <h3 class="nume">Nume: <a href="/produs/<%-prod.id %>" ><span class="val-nume"><%- prod.nume%></span></a></h3>
+                        <div class="info-produs">
+                            <p class="pret">Pret: <span class="val-pret"><%- prod.pret%></span></p>
+                            <p class="autor-anunt">Autor anunt: <a class="val-autor-anunt" href="/utilizator/<%-prod.autor_anunt %>"><%- prod.autor_anunt%></a></p>
+                            <p class="producator">Producator: <span class="val-producator"><%- prod.producator%></span></p>
+                            <p class="an-fabricatie">An fabricatie: <span class="val-an-fabricatie"><%- prod.an_fabricatie%></span></p>
+                            <p class="livrare">Livrare inclusa: <span class="val-livrare"><%- prod.livrare ? "Da": "Nu" %></span></p>
+                            <p class="descriere" style="display: none;">Descriere: <span class="val-descriere"><%- prod.descriere%></span></p>
+                            <p class="specificatii" style="display: none;">Specificatii: <span class="val-specificatii"><%- prod.specificatii%></span></p>
+                        </div>
+                        <p class="categ-produse">Categorie: <span class="val-categ-produse"><%- prod.categ_produse%></span></p>
+                        <figure>
+                            <a href="/produs/<%-prod.id %>" ><img src="/<%- prod.imagine %>" style="width:50%;height:auto;" alt="[imagine <%- prod.nume %>]" /></a>
+                        </figure>
+                        <% if(locals.utilizator && locals.username_profil == locals.utilizator.username) { %> 
+                            <form action="/editare_anunt" method="get" enctype="multipart/form-data">
+                                <input class="buton1" type="submit" value="Editeaza anuntul">
+                            </form>
+                        <% } else {%>        
+                            <label class="selecteaza-cos">
+                                Selectează:<br/>
+                                <input type="checkbox" class="select-cos" value="<%- prod.id %>" autocomplete="off">
+                            </label>
+                        <% } %> 
+                    </section>
+                <% }%>
+            </div>
 		</main>
 		
 		<%- include("../fragmente/footer") %>
