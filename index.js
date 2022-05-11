@@ -113,7 +113,7 @@ app.use("/*", function (req, res, next) {
 	var cale_poza_mare;
 	if (req.session.utilizator) {
 		let cale_utiliz = path.join(__dirname, "poze_uploadate", req.session.utilizator.username);
-		if (fs.readdirSync(cale_utiliz).includes("poza-mica.png")) {
+		if (fs.existsSync(cale_utiliz) && fs.readdirSync(cale_utiliz).includes("poza-mica.png")) {
 			cale_poza_mica = path.join("poze_uploadate", req.session.utilizator.username, "poza-mica.png");
 			cale_poza_mare = path.join("poze_uploadate", req.session.utilizator.username, "poza.png");
 		} else {
