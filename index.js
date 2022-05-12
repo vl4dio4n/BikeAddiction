@@ -408,12 +408,13 @@ app.get("/utilizator/:username", function (req, res) {
 
 	client.query(querySelect1, function (err, rezQuery) {
 		res.locals.produse = rezQuery.rows;
-		var querySelect2 = `select nume, prenume, poza_profil from utilizatori
+		var querySelect2 = `select nume, prenume, rol, poza_profil from utilizatori
 							where username = '${username}'`;
 		client.query(querySelect2, function (err, rezQuery) {
 			res.locals.username_profil = username;
 			res.locals.nume = rezQuery.rows[0].nume;
 			res.locals.prenume = rezQuery.rows[0].prenume;
+			res.locals.rol = rezQuery.rows[0].rol;
 			res.locals.cale_poza = rezQuery.rows[0].poza_profil ? `poze_uploadate/${username}/poza.png` : "resurse/imagini/altele/poza.png";
 			res.render("pagini/profil");
 		});
@@ -558,6 +559,7 @@ app.post("/stergere_cont", function (req, res) {
 });
 
 app.post("/creeaza-anunt", function (req, res) {
+	console.log("I was here");
 	if (!req.session.utilizator) {
 		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
 		return;
@@ -584,13 +586,11 @@ app.post("/creeaza-anunt", function (req, res) {
 					if (strSpecificatii != "") strSpecificatii += ", ";
 					strSpecificatii += `"${spec.trim()}"`;
 				}
-			console.log(strSpecificatii);
-			console.log(id_user);
+
 			var queryInsert = `insert into produse (nume, pret, an_fabricatie, producator, categ_produse, specificatii, descriere, autor_anunt, email, telefon, livrare, imagine, user_id) 
 					values ('${campuriText.nume}', ${campuriText.pret}, ${campuriText.an}, '${campuriText.producator}', '${campuriText.categ_produse}', 
 					'{${strSpecificatii}}', '${campuriText.descriere.trim()}', '${username}', '${campuriText.email}', '${campuriText.telefon}', ${campuriText.livrare}, '${calePoza}', ${id_user})`;
 
-			console.log(queryInsert);
 			client.query(queryInsert, function (err, rezInserare) {
 				if (err) {
 					console.log(err);
@@ -618,8 +618,159 @@ app.post("/creeaza-anunt", function (req, res) {
 			return;
 		}
 		var file_name = fisier.originalFilename.split(".");
-		convertImageProdus(username, `_produs.${file_name[file_name.length - 1]}`);
+		convertImageProdus(username, `_produs.${file_name[file_name.length - 1]}`, `produs_${fs.readdirSync(caleProdus).length}.png`);
 	});
+});
+
+app.get("/editare_anunt/:id_anunt", function (req, res) {
+	if (!req.session.utilizator) {
+		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
+		return;
+	}
+	let username = req.session.utilizator.username;
+	let querySelect = `select * from produse where id=${req.params.id_anunt}`;
+	client.query(querySelect, function (err, rezQuery) {
+		if (err) {
+			console.log(err);
+			randeazaEroare(res, -1, "Eroare", "Eroare baza de date");
+		} else {
+			if (rezQuery.rowCount == 0) randeazaEroare(res, -1, "Eroare", "Produsul nu exista");
+			else if (rezQuery.rows[0].autor_anunt != username) {
+				randeazaEroare(res, 403);
+			} else {
+				res.render("pagini/editeaza-anunt", { produs: rezQuery.rows[0] });
+			}
+		}
+	});
+});
+
+app.post("/modifica_anunt/:id_anunt", function (req, res) {
+	if (!req.session.utilizator) {
+		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
+		return;
+	}
+
+	var id_anunt = req.params.id_anunt;
+	var querySelect = `select user_id from produse where id = ${id_anunt} and user_id = ${req.session.utilizator.id}`;
+	client.query(querySelect, function (err, rezSelect) {
+		if (err) {
+			console.log(err);
+			res.render("pagini/editeaza-anunt", { type: false, raspuns: "Eroare baza de date" });
+		} else if (rezSelect.rowCount[0]) randeazaEroare(res, 403);
+		else {
+			var username = req.session.utilizator.username;
+			var formular = new formidable.IncomingForm();
+
+			formular.parse(req, function (req, campuriText, campuriFisier) {
+				campuriText["livrare"] = campuriText["livrare"] ? true : false;
+
+				var eroare = verificaFormular(campuriText, "anunt");
+
+				if (eroare != "") res.render("pagini/editeaza-anunt", { type: false, raspuns: eroare });
+				else {
+					let arrSpecificatii = campuriText.specificatii.split(",");
+					let strSpecificatii = "";
+					for (let spec of arrSpecificatii)
+						if (spec.trim() != "") {
+							if (strSpecificatii != "") strSpecificatii += ", ";
+							strSpecificatii += `"${spec.trim()}"`;
+						}
+
+					var queryUpdate = `update produse set nume = '${campuriText.nume}', pret = ${campuriText.pret}, an_fabricatie = ${campuriText.an},
+							producator = '${campuriText.producator}', categ_produse = '${campuriText.categ_produse}', specificatii = '{${strSpecificatii}}',
+							descriere = '${campuriText.descriere.trim()}', email = '${campuriText.email}', telefon = '${campuriText.telefon}',
+							livrare = ${campuriText.livrare} where id = ${id_anunt}`;
+
+					client.query(queryUpdate, function (err, rezUpdate) {
+						if (err) {
+							console.log(err);
+							res.render("pagini/editeaza-anunt", { type: false, raspuns: "Eroare baza de date" });
+						} else {
+							res.redirect(`/editare_anunt/${id_anunt}`);
+						}
+					});
+				}
+			});
+			formular.on("fileBegin", function (nume, fisier) {
+				caleProdus = path.join(__dirname, "poze_uploadate", username, "produse");
+				var file_name = fisier.originalFilename.split(".");
+				fisier.filepath = path.join(caleProdus, `_produs.${file_name[file_name.length - 1]}`);
+			});
+			formular.on("file", function (nume, fisier) {
+				// let calePoza = path.join(__dirname, "poze_uploadate", username, "produse", `produs_${fs.readdirSync(caleProdus).length}.png`);
+				if (fisier.size == 0) {
+					fs.unlinkSync(fisier.filepath);
+					return;
+				}
+				let querySelect = `select imagine from produse where id = ${id_anunt}`;
+				client.query(querySelect, function (err, rezSelect) {
+					if (err) console.log(err);
+					else {
+						let index = rezSelect.rows[0].imagine.split("_");
+						index = parseInt(index[index.length - 1].split(".")[0]);
+						var file_name = fisier.originalFilename.split(".");
+						convertImageProdus(username, `_produs.${file_name[file_name.length - 1]}`, `produs_${index}.png`);
+
+						let calePoza = `poze_uploadate/${username}/produse/produs_${index}.png`;
+						let queryUpdate = `update produse set imagine = '${calePoza}' where id = ${id_anunt}`;
+						client.query(queryUpdate);
+					}
+				});
+			});
+		}
+	});
+});
+
+app.post("/stergere_anunt/:id_anunt", function (req, res) {
+	if (!req.session.utilizator) {
+		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
+		return;
+	}
+
+	let id_anunt = req.params.id_anunt;
+	let id_user = req.session.utilizator.id;
+	let username = req.session.utilizator.username;
+	let querySelect = `select user_id from produse where id = ${id_anunt} and user_id = ${id_user}`;
+
+	client.query(querySelect, function (err, rezSelect) {
+		if (err) {
+			console.log(err);
+			res.render("pagini/editeaza-anunt", { type: false, raspuns: "Eroare baza de date", flag: true });
+		} else if (rezSelect.rowCount[0]) randeazaEroare(res, 403);
+		else {
+			var formular = new formidable.IncomingForm();
+			formular.parse(req, function (err, campuriText, campuriFile) {
+				var criptareParola = crypto.scryptSync(campuriText.parola, parolaServer, 64).toString("hex");
+				var queryDelete = `delete from produse where id = ${id_anunt} and user_id =  
+							(
+								select id from utilizatori
+								where parola='${criptareParola}' and id=${id_user}
+							)`;
+
+				client.query(queryDelete, function (err, rezQuery) {
+					if (err) {
+						console.log(err);
+						randeazaEroare(res, -1, "Eroare", "Eroare baza date. Incercati mai tarziu.");
+						return;
+					}
+					if (rezQuery.rowCount == 0) {
+						res.render("pagini/editeaza-anunt", { type: false, raspuns: "Anuntul nu a putut fi sters. Verificati parola introdusa.", flag: true });
+						return;
+					} else {
+						res.redirect(`/utilizator/${username}`);
+					}
+				});
+			});
+		}
+	});
+});
+
+app.get("/terms", function (req, res) {
+	res.render("pagini/terms-and-conditions");
+});
+
+app.get("/privacy", function (req, res) {
+	res.render("pagini/privacy-policy");
 });
 
 app.get("/login", function (req, res) {
@@ -662,6 +813,12 @@ function getDate() {
 
 function verificaFormular(campuriText, type) {
 	var eroare = "";
+
+	var checkNumber = function (str) {
+		for (let ch of str) if (isNaN(ch)) return false;
+		return true;
+	};
+
 	if (type != "anunt") {
 		if (campuriText.email == "") eroare += "Email necompletat. ";
 		if (campuriText.nume == "") eroare += "Nume necompletat. ";
@@ -685,7 +842,7 @@ function verificaFormular(campuriText, type) {
 		if (campuriText.email != "" && !new RegExp("^.+@.+\\..+$", "g").test(campuriText.email)) eroare += "Email invalid. ";
 
 		let pret = campuriText.pret.split(".");
-		if (pret.length > 2 || (pret.length == 1 && parseInt(pret[0]).toString() != pret[0]) || (pret.length == 2 && (parseInt(pret[0]).toString() != pret[0] || parseInt(pret[1]).toString() != pret[1]))) eroare += "Introduceti un numar valid. ";
+		if (pret.length > 2 || (pret.length == 1 && !checkNumber(pret[0])) || (pret.length == 2 && (!checkNumber(pret[0]) || !checkNumber(pret[1])))) eroare += "Introduceti un numar valid. ";
 		if (pret[0].length > 6 || (pret[1] && pret[1].length > 2)) eroare += `Numarul rotunjit nu trebuie sa depaseasca valoarea 10<sup>6</sup> si precizia de 2 zecimale. `;
 
 		let an = campuriText.an;
@@ -722,13 +879,13 @@ function convertImage(username, file) {
 	sharp(old_path).resize({ height: 50, width: 50 }).toFile(new_path);
 }
 
-function convertImageProdus(username, file) {
+function convertImageProdus(username, src_file, dest_file) {
 	let caleProduse = path.join(__dirname, "poze_uploadate", username, "produse");
-	let old_path = path.join(caleProduse, file);
-	[nume, extensie] = file.slice(1).split(".");
-	let new_path = path.join(caleProduse, `produs_${fs.readdirSync(caleProduse).length}.png`);
+	let old_path = path.join(caleProduse, src_file);
+	let new_path = path.join(caleProduse, dest_file);
+	sharp.cache(false);
 	sharp(old_path)
-		.resize({ height: 300, width: 300 })
+		.resize({ height: 300, width: 400 })
 		.toFile(new_path, function (err, info) {
 			fs.unlinkSync(old_path);
 		});

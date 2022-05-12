@@ -269,6 +269,11 @@ p small {
 	justify-content: center;
 }
 
+#informatii a:hover {
+	transform: all 0.1s linear;
+	text-decoration: underline;
+}
+
 /************************ altele *****************************/
 
 .mesaj-eroare,

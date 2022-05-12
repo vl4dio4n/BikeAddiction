@@ -35,6 +35,13 @@
 	grid-template-columns: 1fr 3fr;
 }
 
+#lbl-parl {
+	grid-area: l-parl;
+}
+#inp-parl {
+	grid-area: f-parl;
+}
+
 #buton-stergere .buton {
 	grid-area: z-buton-stergere;
 	width: auto;

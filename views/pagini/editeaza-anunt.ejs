@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html  lang="ro">
+    <head>
+        <meta name="description" content="BikeAddiction - înregistrare utilizatori.">
+        <meta name="keywords" content="BikeAddicton, inregistrare, utilizatori">
+        <title>BikeAddiction - editeaza anunt </title>
+        <%- include("../fragmente/head") %>     
+        <link rel="stylesheet" href="/resurse/css/pagina-inregistrare.css" type="text/css"/>
+        <link rel="stylesheet" href="/resurse/css/creeaza-anunt.css" type="text/css"/>
+        <link rel="stylesheet" href="/resurse/css/editeaza-anunt.css" type="text/css"/>
+        <script type="text/javascript" src=/resurse/js/creeaza-anunt.js></script>
+
+        <script>
+
+			// populez inputurile din pagina de profil cu datele din tabel (incarcate prin EJS)
+			window.addEventListener("DOMContentLoaded", function(){
+				document.getElementById("inp-nume").value = "<%= locals.produs.nume %>";
+				document.getElementById("inp-pret").value = "<%= locals.produs.pret %>";
+                document.getElementById("inp-an").value = "<%= locals.produs.an_fabricatie %>";
+                document.getElementById("inp-producator").value = "<%= locals.produs.producator %>";
+                document.getElementById("inp-descriere").value = "<%= locals.produs.descriere %>";
+                document.getElementById("inp-specificatii").value = "<%= locals.produs.specificatii %>";
+                document.getElementById("inp-email").value="<%= locals.produs.email %>";
+                document.getElementById("inp-telefon").value="<%= locals.produs.telefon %>";
+                document.getElementById("inp-livrare").checked = "<%= locals.produs.livrare %>" == "true";
+
+                var optiuni=document.getElementById("inp-sel-categ").options;
+				for (let opt of optiuni)
+					if (opt.value=="<%= locals.produs.categ %>")
+						opt.selected=true;
+			});
+		</script>
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+        <section class="form">
+            <% if(!locals.utilizator){ %>
+                <p class="mesaj-eroare">Trebuie sa te autentifici pentru a putea vedea aceasta pagina.</p> 
+            <% } else { %> 
+                <h2>Editeaza anuntul</h2>
+                <%- include("../fragmente/formular-anunt", { action:`/modifica_anunt/${locals.produs.id}`, mesaj: "Modifica", required_image: false}) %>
+                <% if(locals.type == true){ %>
+                    <p class="mesaj-succes"><%- locals.raspuns %></p>
+                <% } else if(locals.type == false){%>
+                    <p class="mesaj-eroare"><%- locals.raspuns %></p>
+                <% } %> 
+            <% } %>
+        </section>
+        <section class="form" id="stergere">
+            <h2>Sterge anuntul</h2>
+            <%- include("../fragmente/formular-stergere-cont",{action:`/stergere_anunt/${locals.produs.id}`, mesaj: "Sterge anuntul"}) %>
+            <% if(locals.type == true && locals.flag){ %>
+                <p class="mesaj-succes"><%- locals.raspuns %></p>
+            <% } else if(locals.type == false && locals.flag){%>
+                <p class="mesaj-eroare"><%- locals.raspuns %></p>
+            <% } %> 
+        </section>
+    </main>
+
+    <%- include("../fragmente/footer") %>
+    
+
+</body>
+</html>

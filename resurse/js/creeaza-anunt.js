@@ -1,5 +1,3 @@
-console.log();
-
 function paragrafEroare(mesaj) {
 	let p_vechi = document.getElementsByClassName("mesaj-eroare")[0] || document.getElementsByClassName("mesaj-succes")[0];
 	if (!p_vechi) {
@@ -11,13 +9,17 @@ function paragrafEroare(mesaj) {
 	} else {
 		p_vechi.classList.remove(p_vechi.classList[0]);
 		p_vechi.classList.add("mesaj-eroare");
-		p_vechi.textContent = mesaj;
+		p_vechi.innerHTML = mesaj;
 	}
+}
+
+function checkNumber(str) {
+	for (let ch of str) if (isNaN(ch)) return false;
+	return true;
 }
 
 window.addEventListener("load", function () {
 	var formular = document.getElementsByClassName("form-anunt")[0];
-	console.log("I was here");
 	console.log(formular);
 	if (formular) {
 		formular.onsubmit = function () {
@@ -45,8 +47,7 @@ window.addEventListener("load", function () {
 			}
 
 			let pret = document.getElementById("inp-pret").value.split(".");
-			console.log(pret);
-			if (pret.length > 2 || (pret.length == 1 && parseInt(pret[0]).toString() != pret[0]) || (pret.length == 2 && (parseInt(pret[0]).toString() != pret[0] || parseInt(pret[1]).toString() != pret[1]))) {
+			if (pret.length > 2 || (pret.length == 1 && !checkNumber(pret[0])) || (pret.length == 2 && (!checkNumber(pret[0]) || !checkNumber(pret[1])))) {
 				paragrafEroare("Introduceti un numar valid");
 				return false;
 			}

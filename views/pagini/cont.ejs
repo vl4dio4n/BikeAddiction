@@ -41,7 +41,7 @@
 			</section>
 			<section class="form" id="stergere">
 				<h2>Sterge contul</h2>
-				<%- include("../fragmente/formular-stergere-cont",{action:"/stergere_cont"}) %>
+				<%- include("../fragmente/formular-stergere-cont",{action:"/stergere_cont", mesaj: "Sterge contul"}) %>
 				<% if(locals.type == true && locals.flag){ %>
 					<p class="mesaj-succes"><%- locals.raspuns %></p>
 				<% } else if(locals.type == false && locals.flag){%>

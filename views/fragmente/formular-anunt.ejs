@@ -1,0 +1,60 @@
+<form class="form-anunt" method="post" class="date" action="<%- locals.action %>"  enctype="multipart/form-data">
+    <div>
+        <label for="inp-nume" id="lbl-nume"> Nume*: </label>
+        <input type="text" name="nume" id="inp-nume" value="" required>
+        <p id="info-nume">(maximum 50 de caractere)</p>
+
+        <label for="inp-pret" id="lbl-pret"> Pret*: </label>
+        <input type="text" name="pret" id="inp-pret" value="" required>
+        <p id="info-pret">(maximum 8 cifre)</p>
+
+        <label for="inp-an" id="lbl-an"> An fabricatie*: </label>
+        <input type="text" name="an" id="inp-an" value="" required>
+        <p id="info-an">(maximum 4 cifre)</p>
+
+        <label for="inp-producator" id="lbl-producator"> Producator*: </label>
+        <input type="text" name="producator" id="inp-producator" value="" required>
+        <p id="info-producator">(maximum 300 caractere)</p>
+        
+        <label for="inp-descriere" id="lbl-descriere"> Descriere: </label>
+        <textarea name="descriere" id="inp-descriere" value=""> </textarea>
+
+        <label for="inp-sel-categ" id="lbl-sel-categ"> Categorie: </label>
+        <select name="categ_produse" id="inp-sel-categ">
+            <% for (let opt of locals.categProduse) { %>
+                <option id="opt-sel-categ" value="<%- opt %>"><%- opt %></option>
+            <% } %>
+        </select>
+
+        <label for="inp-specificatii" id="lbl-specificatii"> Specificatii: </label>
+        <textarea name="specificatii" id="inp-specificatii" value=""> </textarea>
+        <p id="info-specificatii">(Separa specificatiile prin virgula)</p>
+
+        <label for="inp-email" id="lbl-email"> Email: </label>
+        <input type="text" name="email" id="inp-email" value="">
+
+        <label for="inp-telefon" id="lbl-telefon"> Telefon: </label>
+        <input type="text" name="telefon" id="inp-telefon" value="">
+        
+        <label for="inp-livrare" id="lbl-livrare"> Livrare: </label>
+        <input type="checkbox" name="livrare" id="inp-livrare" value="true">
+
+        <label for="inp-poza" id="lbl-poza"> Poza: </label>  
+        <input type="file" id="inp-poza" name="poza">
+        <script>
+            document.getElementById("inp-poza").required = "<%- locals.required_image %>" == "true";  
+        </script>			
+        
+        <% if(locals.produs) {%> 
+            <figure id="contianer-imag-produs">
+                <img id="imag-produs" src="/<%- locals.produs.imagine %>" alt="[imagine profil]" />
+            </figure>
+        <% } %> 
+
+        <p id="butoane">
+            <input class="buton" type="submit" value="<%- locals.mesaj %> ">
+            <input class="buton" type="reset" value="Reseteaza">
+        </p>
+
+    </div>
+</form>

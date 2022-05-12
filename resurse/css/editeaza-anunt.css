@@ -1,0 +1,54 @@
+.form-anunt div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-nume f-nume z-poza"
+		"l-nume z-info-nume z-poza"
+		"l-pret f-pret z-poza"
+		"l-pret z-info-pret z-poza"
+		"l-an f-an z-poza"
+		"l-an z-info-an z-poza"
+		"l-producator f-producator z-poza"
+		"l-producator z-info-producator z-poza"
+		"l-descriere f-descriere z-poza"
+		"l-sel-categorie f-sel-categorie z-poza"
+		"l-specificatii f-specificatii z-poza"
+		"l-specificatii z-info-specificatii z-poza"
+		"l-email f-email z-poza"
+		"l-telefon f-telefon z-poza"
+		"l-livrare f-livrare z-poza"
+		"l-poza f-poza z-poza"
+		"z-butoane z-butoane z-poza";
+	grid-gap: 5px;
+	width: 100%;
+	grid-template-columns: 1fr 3fr 2fr;
+}
+
+#contianer-imag-produs {
+	grid-area: z-poza;
+	padding-left: 5%;
+}
+
+#imag-produs {
+	width: 100%;
+}
+
+#stergere > .form-inreg div {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		"l-parl f-parl"
+		"l-parl z-butoan-stergere";
+	grid-template-columns: 1fr 3fr;
+}
+
+#buton-stergere .buton {
+	grid-area: z-buton-stergere;
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+section:nth-child(1) {
+	margin-bottom: 20px;
+}
