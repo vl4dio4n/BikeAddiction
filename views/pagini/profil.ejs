@@ -2,14 +2,16 @@
 <html lang="ro">
 	<head>
 		<title>Profil</title>
+        <link rel="stylesheet" href="/resurse/css/pagina-produse.css" type="text/css" />
+		<link rel="stylesheet" href="/resurse/css/profil.css" type="text/css" />
+
 		<%- include("../fragmente/head") %>
-        <link rel="stylesheet" type="text/css" href="/resurse/css/pagina-produse.css"/>
-		<link rel="stylesheet" type="text/css" href="/resurse/css/profil.css"/>
+        <script type="text/javascript" src="/resurse/js/produse.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<%- include("../fragmente/header") %>
-		</header>
+		
+		<%- include("../fragmente/header") %>
+		
 		<main>
 			<section id="sectiune-profil">
                 <h2>Profil <%- locals.username_profil %></h2>

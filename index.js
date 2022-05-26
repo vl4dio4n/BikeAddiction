@@ -7,9 +7,19 @@ const sass = require("sass");
 const formidable = require("formidable");
 const crypto = require("crypto");
 const session = require("express-session");
-const req = require("express/lib/request");
 const nodemailer = require("nodemailer");
 const path = require("path");
+
+const request = require("request");
+
+const html_to_pdf = require("html-pdf-node");
+
+const juice = require("juice");
+const QRCode = require("qrcode");
+
+const mongodb = require("mongodb");
+
+var url = "mongodb://localhost:27017";
 
 const obGlobal = {
 	obImagini: null,
@@ -20,7 +30,16 @@ const obGlobal = {
 	numeDomeniu: null,
 	port: 8080,
 	sirAlphaNum: [],
+	clientMongo: mongodb.MongoClient,
+	bdMongo: null,
 };
+
+obGlobal.clientMongo.connect(url, function (err, bd) {
+	if (err) console.log(err);
+	else {
+		obGlobal.bdMongo = bd.db("BikeAddiction");
+	}
+});
 
 async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []) {
 	var transp = nodemailer.createTransport({
@@ -82,6 +101,8 @@ for (let folder of foldere) {
 
 app = express();
 
+app.use(["/produse_cos", "/cumpara"], express.json({ limit: "2mb" }));
+
 app.use(
 	session({
 		// aici se creeaza proprietatea session a requestului (pot folosi req.session)
@@ -128,6 +149,7 @@ app.use("/*", function (req, res, next) {
 });
 
 app.get("/*", function (req, res, next) {
+	res.locals.pageURL = req.url;
 	let id_utiliz = req.session.utilizator ? req.session.utilizator.id : null;
 	let queryInsert = `insert into accesari(ip, user_id, pagina) values ('${getIp(req)}', ${id_utiliz} ,'${req.url}')`;
 	client.query(queryInsert, function (err, rezQuery) {
@@ -159,7 +181,24 @@ app.get(["/", "/index", "/home"], function (req, res) {
 		let utiliz_online = [];
 		if (err) console.log(err);
 		else utiliz_online = rezQuery.rows;
+		// res.locals.ip = getIp(req);
+		// res.locals.utiliz_online = utiliz_online;
+
 		res.render("pagini/index", { ip: getIp(req), utiliz_online: utiliz_online });
+
+		// request(
+		// 	"https://secure.geobytes.com/GetCityDetails?key=7c756203dbb38590a66e01a5a3e1ad96&fqcn=109.99.96.15", //se inlocuieste cu req.ip; se testeaza doar pe Heroku
+		// 	function (error, response, body) {
+		// 		if (error) {
+		// 			console.error("error:", error);
+		// 		} else {
+		// 			var obiectLocatie = JSON.parse(body);
+		// 			locatie = obiectLocatie.geobytescountry + " " + obiectLocatie.geobytesregion;
+		// 		}
+
+		// 		res.render("pagini/index");
+		// 	}
+		// );
 	});
 });
 
@@ -355,6 +394,20 @@ app.post("/login", function (req, res) {
 			}
 		});
 	});
+});
+
+app.get("/facturi", function (req, res) {
+	if (req.session.utilizator && req.session.utilizator.rol == "admin") {
+		obGlobal.bdMongo
+			.collection("facturi")
+			.find({})
+			.toArray(function (err, result) {
+				if (err) console.log(err);
+				else res.render("pagini/facturi", { facturi: result });
+			});
+	} else {
+		randeazaEroare(res, 403);
+	}
 });
 
 app.get("/useri", function (req, res) {
@@ -765,6 +818,79 @@ app.post("/stergere_anunt/:id_anunt", function (req, res) {
 	});
 });
 
+//############################# Cos virtual ###################################
+
+app.post("/produse_cos", function (req, res) {
+	console.log("La la la", req.body);
+	if (req.body.ids_prod.length != 0) {
+		let querySelect = `select * from produse where id in (${req.body.ids_prod.join(",")})`;
+		client.query(querySelect, function (err, rezQuery) {
+			if (err) {
+				console.log(err);
+				res.send("Eroare baza de date");
+			} else {
+				res.send(rezQuery.rows);
+			}
+		});
+	} else {
+		res.send([]);
+	}
+});
+
+app.post("/cumpara", function (req, res) {
+	if (!req.session.utilizator) {
+		randeazaEroare(res, -1, "Eroare", "Nu sunteti logat.");
+		return;
+	}
+	//TO DO verificare id-uri pentru query-ul la baza de date
+	console.log("Hey", req.body.ids_prod, "Hey");
+	client.query("select * from produse where id in (" + req.body.ids_prod + ")", function (err, rez) {
+		//console.log(err, rez);
+		//console.log(rez.rows);
+
+		let rezFactura = ejs.render(fs.readFileSync("views/pagini/factura.ejs").toString("utf8"), { utilizator: req.session.utilizator, produse: rez.rows, data: getDate(), protocol: obGlobal.protocol, domeniu: obGlobal.numeDomeniu });
+		//console.log(rezFactura);
+		let options = { format: "A4", args: ["--no-sandbox", "--disable-extensions", "--disable-setuid-sandbox"] };
+
+		let file = { content: juice(rezFactura, { inlinePseudoElements: true }) };
+
+		html_to_pdf.generatePdf(file, options).then(function (pdf) {
+			if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
+			var numefis = "./temp/test" + new Date().getTime() + ".pdf";
+			fs.writeFileSync(numefis, pdf);
+			let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
+			let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
+
+			trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml, [
+				{
+					filename: "factura.pdf",
+					content: fs.readFileSync(numefis),
+				},
+			]);
+			res.write("Totu bine!");
+			res.end();
+			// res.render("pagini/cos-virtual", { type: true, raspuns: "Procesul s-a incheiat cu succes" });
+			let factura = { data: new Date(), username: req.session.utilizator.username, produse: rez.rows };
+			obGlobal.bdMongo.collection("facturi").insertOne(factura, function (err, res) {
+				if (err) console.log(err);
+				else {
+					console.log("Am inserat factura in mongodb");
+					//doar de debug:
+					obGlobal.bdMongo
+						.collection("facturi")
+						.find({})
+						.toArray(function (err, result) {
+							if (err) console.log(err);
+							else console.log(result);
+						});
+				}
+			});
+		});
+	});
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 app.get("/terms", function (req, res) {
 	res.render("pagini/terms-and-conditions");
 });
@@ -800,8 +926,8 @@ app.get("/*", function (req, res) {
 });
 
 /********************************************************************************************************************/
-function getDate() {
-	let date = new Date();
+function getDate(data) {
+	let date = data ? data : new Date();
 	let day = ("0" + date.getDate()).slice(-2);
 	let month = ("0" + (date.getMonth() + 1)).slice(-2);
 	let year = date.getFullYear();
@@ -973,6 +1099,20 @@ function getIp(req) {
 		return req.connection.remoteAddress;
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////// Resetare folder imagini qr-code
+
+cale_qr = "./resurse/imagini/qrcode";
+if (fs.existsSync(cale_qr)) fs.rmSync(cale_qr, { force: true, recursive: true });
+fs.mkdirSync(cale_qr);
+client.query("select id from produse", function (err, rez) {
+	for (let prod of rez.rows) {
+		let cale_prod = obGlobal.protocol + obGlobal.numeDomeniu + "/produs/" + prod.id;
+		//console.log(cale_prod);
+		QRCode.toFile(cale_qr + "/" + prod.id + ".png", cale_prod);
+	}
+});
 
 // app.listen(8080);
 var s_port = process.env.PORT || obGlobal.port;

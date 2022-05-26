@@ -1,0 +1,55 @@
+#facturi-section h2 {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+summary {
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+summary span {
+	font-weight: bold;
+}
+
+.tabel-factura {
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	width: 80%;
+}
+
+.tabel-factura td,
+.tabel-factura th {
+	border: 2px solid var(--color6);
+	text-align: center;
+	padding: 5px;
+}
+
+.tabel-factura tr:nth-child(2n + 1) > td,
+.tabel-factura tr:nth-child(2n + 1) > th {
+	background-color: var(--culoare-marcaj);
+}
+
+.tabel-factura tr:nth-child(2n) > td,
+.tabel-factura tr:nth-child(2n) > th {
+	background-color: rgba(51, 49, 51, 0.15);
+}
+
+.link {
+	text-decoration: none;
+	color: black;
+}
+
+.link:hover {
+	transition: all 0.1s linear;
+	text-decoration: underline;
+	color: var(--color6);
+}
+
+details {
+	margin-bottom: 20px;
+}

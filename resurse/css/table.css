@@ -44,6 +44,16 @@
 	outline: 5px solid var(--color6-alpha);
 }
 
+#program tbody tr:nth-child(2n + 1) {
+	background-color: var(--culoare-marcaj);
+}
+
+#program tbody tr:nth-child(2n),
+#program thead tr,
+#program tfoot tr {
+	background-color: rgba(51, 49, 51, 0.15);
+}
+
 @media screen and (max-width: 750px) {
 	#container-tabel {
 		overflow-x: scroll;

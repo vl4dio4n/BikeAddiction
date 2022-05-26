@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html  lang="ro">
+    <head>
+        <meta name="description" content="BikeAddiction - cos virtual.">
+        <meta name="keywords" content="BikeAddiction, biciclete, piese, echipamente, accesorii, cos virtual">
+        <title>BikeAddiction - cos virtual</title>
+        
+        <link rel="stylesheet" href="/resurse/css/pagina-produs.css" type="text/css" />
+        <%- include("../fragmente/head") %>     
+        <% if(locals.utilizator) { %> 
+            <script type="text/javascript" src="/resurse/js/cos-virtual.js"></script>
+        <% } %> 
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+        
+        <section id="sectiune-cumpara">
+            <% if(!locals.utilizator) {%>
+                <p class="mesaj-eroare">Trebuie sa te autentifici pentru a putea vedea aceasta pagina.</p>    
+            <% } else { %>  
+                <button id="cumpara" class="buton">Cumpara</button>
+                <button id="goleste-cosul" class="buton">Goleste cosul</button>    
+            <% } %>     
+        </section>
+    
+    </main>
+
+    <%- include("../fragmente/footer") %>
+    </body>
+</html>

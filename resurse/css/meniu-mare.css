@@ -92,6 +92,10 @@ ul.meniu > li > ul > li a:hover {
 	color: var(--color4);
 }
 
+#cos-virtual-nav {
+	margin-left: auto;
+}
+
 @keyframes animatie-submeniu {
 	0% {
 		transform: scale(1, 0);

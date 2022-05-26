@@ -6,7 +6,7 @@
         <meta name="description" content="Aici poti gasi o gama larga de biciclete, piese, accesorii si echipamente destinate acestora la un pret avantajos">
         <%- include("../fragmente/head.ejs"); %>
         <script src="/resurse/js/tema.js"></script>
-
+        <script src="/resurse/js/calendar.js"></script>
     </head> 
     <body>
         <%- include("../fragmente/header.ejs") %> 
@@ -167,10 +167,67 @@
                         </table>
                     </div>
                 </section>
-                <section id ="calendar">
-                    <h2>Calendar</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea, minus. Saepe blanditiis, consequuntur tempora, pariatur eum, culpa nobis labore porro magnam iure eius. Porro in aspernatur autem alias repellendus dolorum.</p>
+                <section id ="calendar-section">
+                    <h2>Calendar Evenimente</h2>
+
+                    <%
+                        let luni = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+                        let data = new Date();
+                        let strData = data.getDay() + " " + luni[data.getMonth()] + " " + data.getFullYear();
+                    %> 
+                    <p><i class="fas fa-angle-left"></i>  <span><%= strData %></span>  <i class="fas fa-angle-right"></i></p>
+
+                    <div id="calendar">
+                        <div>L</div>
+                        <div>Ma</div>
+                        <div>Mi</div>
+                        <div>J</div>
+                        <div>V</div>
+                        <div>S</div>
+                        <div>D</div>
+                    
+                    <% 
+                    nrZile = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+                    
+                    d = new Date(); //observatie: este data serverului nu a clinetului; codul ejs fiind compilat pe server
+                    anCurent = d.getFullYear();
+                    lunaCurenta = d.getMonth();
+                    if(anCurent % 400 == 0 || (anCurent % 4 == 0 && anCurent % 100 != 0)) nrZile[1] = 29;
+                    let nrZileCalendar = nrZile[lunaCurenta];
+                    let zileLunaAnterioara = lunaCurenta > 0 ? nrZile[lunaCurenta - 1] : nrZile[nrZile.length - 1];
+                    primaZiLuna = new Date(anCurent, lunaCurenta, 1);
+                    ultimaZiLuna = new Date(anCurent, lunaCurenta, nrZileCalendar);
+                    ziSaptPrimaZiLuna = (primaZiLuna.getDay() - 1 + 7) % 7;
+                    ziSaptUltimaZiLuna = (ultimaZiLuna.getDay() - 1 + 7) % 7;
+                    for (let i = 0; i < ziSaptPrimaZiLuna; i++){
+                    %>
+                        <div class="faded"><%= zileLunaAnterioara - ziSaptPrimaZiLuna + i + 1 %></div> 
+                    <% } 
+                    let j = ziSaptPrimaZiLuna;
+                    for (let i = 1; i <= nrZileCalendar; i++){
+                        if(j == 4 && i + 7 > nrZileCalendar){
+                    %>
+                    <div class="zi eveniment" title="Reducere produse" style="background-color: var(--color6);"><%= i %></div> 
+                    <% } else if(j == 6 && i % 2 == 0){ %>
+                    <div class="zi eveniment" title="Promotie" style="background-color: var(--color6);"><%= i %></div> 
+                    <% } else if(i == 25 && lunaCurenta == 11){ %>
+                    <div class="zi eveniment" title="Craciun" style="background-color: var(--color6);"><%= i %></div> 
+                    <% } else if(j == 4 && i == 13){ %>
+                    <div class="zi eveniment" title="Vineri 13" style="background-color: var(--color6);"><%= i %></div> 
+                    <% } else if(i == 31 && lunaCurenta == 9){ %>
+                    <div class="zi eveniment" title="Halloween" style="background-color: var(--color6);"><%= i %></div> 
+                    <% } else { %>
+                    <div class="zi"><%= i %></div> 
+                    <% }
+                    j = (j + 1) % 7; 
+                    } %>
+                    <% for (let i = 0; i < 6 - ziSaptUltimaZiLuna; i++){ %>
+                        <div class="faded"><%= i + 1 %></div> 
+                    <% } %>
+
+                    </div>                
                 </section>
+
                 <section id="utilizatori-online">
                     <h2>Utilizatori Online</h2>
                     <% if(locals.utiliz_online){ %> 
@@ -197,8 +254,42 @@
                 </section>
                 <section id="date-site">
                     <h2>Date despre site si server</h2>
-                    <p><%- locals.ip %></p>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam dolorum officia veniam repellat minus aut, quam officiis est eius ducimus rerum voluptatem corporis nesciunt consectetur ea voluptatibus omnis aliquam? Alias!</p>
+                    <% 
+                        let dataServer = new Date;
+                        let sirData = dataServer.getHours() + ":" + dataServer.getMinutes() + ":" + dataServer.getSeconds();
+                    %>
+                    <p>Locatie client: <span id="locatie-client"><%= locals.locatie %></span></p>
+                    <p>Ip client: <span id="ip-client"><%= locals.ip %></span> </p>
+                    <p>Ora server: <span id="data-server"><%= sirData %></span></p>
+                    <p>Ora client: <span id="data-client"></span></p>
+                    <script>
+                        function zero(nr){
+                            if (nr<10) return "0"+nr;
+                            return nr;
+                        }
+                        
+                        d=new Date();
+                        document.getElementById("data-client").innerHTML=zero(d.getHours())+":"+zero(d.getMinutes())+":"+zero(d.getSeconds());
+    
+                        function actualizeazaElemData(id_div){
+                            var data_div=document.getElementById(id_div);
+                            if (data_div.innerHTML!="")
+                            {
+                                var timp=data_div.innerHTML.split(":");
+                                var dt=new Date(2000,1,15, timp[0],timp[1], timp[2] );//nu conteaza data (am pus valori random pentru an, luna si zi) ci timpul
+                            }
+                            else
+                                var dt=new Date();
+                            dt.setSeconds(dt.getSeconds()+1)
+                            data_div.innerHTML=zero(dt.getHours())+":"+zero(dt.getMinutes())+":"+zero(dt.getSeconds());
+                        }
+                        function actualizeazaData(){
+                            actualizeazaElemData("data-client");
+                            actualizeazaElemData("data-server");
+                        }
+                        actualizeazaData();
+                        setInterval(actualizeazaData,1000);
+                    </script>
                 </section>
             </div>
             <section id="banner">

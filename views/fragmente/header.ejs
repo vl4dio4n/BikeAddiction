@@ -40,7 +40,6 @@
         <li><a href="/contact">Contact</a><div></div></li>
         <li><a href="/produse">Produse</a><div></div>
             <ul class="submeniu">
-                
                 <% for(let categProdus of locals.categProduse){  %>
                     <li><a href="/produse?tip=<%- categProdus %>"><%- categProdus[0].toUpperCase() + categProdus.slice(1) %> </a></li>
                 <% } %>  
@@ -53,7 +52,11 @@
             <li><a href="/inregistrare">Sign Up</a><div></div></li>
         <% } %>
         <% if(locals.utilizator && locals.utilizator.rol == "admin"){ %>
-            <li><a href="/useri">Users</a><div></div></li>
+            <li><a href="/useri">Users</a><div></div>
+                <ul class="submeniu">
+                    <li><a href="/facturi">Facturi</a></li>
+                </ul>
+            </li>
         <% } %> 
         <% if(locals.utilizator){ %> 
             <li><a href="/utilizator/<%- locals.utilizator.username %>"><%- locals.utilizator.username %></a><div></div>
@@ -63,6 +66,8 @@
                 </ul>
             </li>
         <% } %> 
+        <li id="cos-virtual-nav"><a href="/cos-virtual"><span class="fas fa-shopping-cart"></span></a><div></div></li>
     </ul>
 </nav>
 
+<section id="istoric"></section>

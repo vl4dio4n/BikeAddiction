@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Factură</title>
+		<style>
+			body{
+				text-align: center;
+			}
+			#tabl{
+				border-collapse:collapse;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			#tabl td, #tabl th{
+				border:1px solid black;
+				text-align: center;
+				padding: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Factură BikeAddiction</h1>
+		<p>Stimate domn <%-locals.utilizator.nume %>, aveți aici lista de produse achiziționate.</p> 
+		<p>Numar produse: <%- locals.produse.length %></p>
+		<p>Data emiterii facturii: <%- locals.data %></p>
+		<table id="tabl">
+			<thead>
+				<tr>
+					<th>CNT</th>
+					<th>Produs</th>
+					<th>Preț</th>
+					<th>QR</th>
+					<th>Imagine</th>
+					<th>Autor anunt</th>
+					<th>Livrare</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+                <% 
+				var suma=0;
+				var i = 0;
+				for (let prod of locals.produse) {
+					suma+=parseFloat(prod.pret);
+					i ++;	
+				%>
+                    <tr>
+						<td><%- i %></td>
+                        <td><%- prod.nume %></td>
+                        <td><%- prod.pret %></td>
+						<td><img src="<%- locals.protocol%><%- locals.domeniu %>/resurse/imagini/qrcode/<%-  prod.id %>.png"></td>
+						<td><img src="<%- locals.protocol%><%- locals.domeniu %>/<%- prod.imagine %>" style="width:100px;height:auto;" alt="[imagine <%- prod.nume %>]"></td>
+						<td><%- prod.autor_anunt %></td>
+						<td><%- prod.livrare ? "Da": "Nu" %></td>
+					</tr>
+                <% } %>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7">Total: <%- suma %></td>
+				</tr>
+			</tfoot>
+		</table>
+	</body>
+</html>

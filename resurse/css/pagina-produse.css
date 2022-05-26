@@ -99,6 +99,15 @@ section.produs {
 	background-color: var(--color4);
 }
 
+/* #cumpara,
+#goleste-cosul {
+	position: unset;
+}
+
+#sectiune-cumpara {
+	text-align: center;
+} */
+
 @media screen and (max-width: 800px) {
 	#grid-produse {
 		display: block;

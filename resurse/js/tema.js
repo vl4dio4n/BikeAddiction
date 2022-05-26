@@ -12,6 +12,7 @@ window.addEventListener("load", function () {
 			else localStorage.setItem("tema", "volcano");
 			document.body.classList.toggle("volcano");
 			seteazaButonTema();
+			console.log("I was here");
 		};
 	}
 });
