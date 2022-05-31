@@ -9,10 +9,11 @@
         let port = "<%= port %>"
         let username = null;
         </script>
-        <% if(locals.utilizator) %>
+        <% if(locals.utilizator){ %>
         <script>
             username = "<%= locals.utilizator.username %>"
         </script> 
+        <% } %>
         <script src="/resurse/js/chat.js"></script>
 	</head>
 	<body class="container">
