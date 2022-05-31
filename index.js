@@ -876,6 +876,9 @@ app.post("/cumpara", function (req, res) {
 		let options = { format: "A4", args: ["--no-sandbox", "--disable-extensions", "--disable-setuid-sandbox"] };
 
 		let file = { content: juice(rezFactura, { inlinePseudoElements: true }) };
+		//////
+		let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
+		let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
 
 		trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml, [
 			{
