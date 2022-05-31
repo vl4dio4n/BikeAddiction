@@ -43,7 +43,7 @@
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;
-  animation-duration: 54s;
+  animation-duration: 45s;
   transform-origin: center center;
 }
 
@@ -51,52 +51,44 @@
   animation-play-state: paused;
 }
 
-#galerie-animata figure:nth-of-type(12) {
+#galerie-animata figure:nth-of-type(10) {
   animation-delay: 0s;
 }
 
-#galerie-animata figure:nth-of-type(11) {
+#galerie-animata figure:nth-of-type(9) {
   animation-delay: 4.5s;
 }
 
-#galerie-animata figure:nth-of-type(10) {
+#galerie-animata figure:nth-of-type(8) {
   animation-delay: 9s;
 }
 
-#galerie-animata figure:nth-of-type(9) {
+#galerie-animata figure:nth-of-type(7) {
   animation-delay: 13.5s;
 }
 
-#galerie-animata figure:nth-of-type(8) {
+#galerie-animata figure:nth-of-type(6) {
   animation-delay: 18s;
 }
 
-#galerie-animata figure:nth-of-type(7) {
+#galerie-animata figure:nth-of-type(5) {
   animation-delay: 22.5s;
 }
 
-#galerie-animata figure:nth-of-type(6) {
+#galerie-animata figure:nth-of-type(4) {
   animation-delay: 27s;
 }
 
-#galerie-animata figure:nth-of-type(5) {
+#galerie-animata figure:nth-of-type(3) {
   animation-delay: 31.5s;
 }
 
-#galerie-animata figure:nth-of-type(4) {
+#galerie-animata figure:nth-of-type(2) {
   animation-delay: 36s;
 }
 
-#galerie-animata figure:nth-of-type(3) {
-  animation-delay: 40.5s;
-}
-
-#galerie-animata figure:nth-of-type(2) {
-  animation-delay: 45s;
-}
-
 #galerie-animata figure:nth-of-type(1) {
-  animation-delay: 49.5s;
+  animation-delay: 40.5s;
 }
 
 @keyframes animatie-galerie {
@@ -105,22 +97,22 @@
     opacity: 1;
     clip-path: polygon(0 100%, 0 100%, 0 0, 100% 0, 100% 100%, 0% 100%, 100% 0%, 100% 0, 100% 0);
   }
-  5.5555555556% {
+  6.6666666667% {
     opacity: 1;
   }
-  8.3333333333% {
+  10% {
     z-index: 10;
     opacity: 0;
     clip-path: polygon(0 0%, 0 100%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%, 100% 0, 0% 0);
   }
-  8.3333433333% {
+  10.00001% {
     z-index: -10;
   }
-  91.6666666667% {
+  90% {
     opacity: 0;
     z-index: -10;
   }
-  91.6666766667% {
+  90.00001% {
     z-index: 0;
   }
   100% {

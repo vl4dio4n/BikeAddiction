@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ro">
+	<head>
+		<title>Forum</title>
+		<%- include("../fragmente/head") %>
+		<link rel="stylesheet" type="text/css" href="/resurse/css/forum.css" />
+        <script src="/resurse/js/forum.js"></script>
+	</head>
+	<body class="container">
+		
+		<%- include("../fragmente/header") %>
+		
+		<main>
+			
+            <section id="sectiune-forum">
+                <h2>Lasa un mesaj</h2>
+                <p>Aceasta este o pagina destinata intrebarilor despre biciclete. Oricine poate pune o intrebare sau raspunde la una.</p>
+                <form method="post" action="/forum">
+                    <label for="inp-mesaj" id="lbl-mesaj">Mesajul dumneavoastră:</label> <br>
+                    <textarea id="inp-mesaj" name="mesaj" placeholder="Mesaj"></textarea> <br>
+                    <input class="buton" type="submit" value="Trimite mesajul!">
+                </form>
+            </section>
+
+            
+            <% if (locals.mesaje) {
+                var mesajeSort = locals.mesaje.sort(function(a, b) {return (new Date(b.attributes.data)).getTime() - (new Date(a.attributes.data)).getTime()})
+                let i = 0;
+                for (let msg of mesajeSort) {
+                    i ++; 
+                    let dt = new Date(msg.attributes.data);
+                    id = msg.attributes.username + "-" + dt.getDate() + "-" + dt.getMonth() + "-" + dt.getFullYear() + "-" + dt.getHours() + "-" + dt.getMinutes() + "-" + dt.getSeconds();
+            %>
+            <section class="mesaj">
+                <div class="header-mesaj">
+                    <% if(msg.attributes.username != "anonim") {%>
+                        <h4><a href="/utilizator/<%- msg.attributes.username %>"><%= msg.attributes.username%></a> spune:</h4>
+                    <% } else { %>
+                        <h4><span><%= msg.attributes.username%></span> spune:</h4>
+                    <% } %>
+                    <p><small><time datetime="<%= dt.getUTCDate() %>"><%= dt.toLocaleString('ro-RO', {
+                                                weekday: 'long', 
+                                                day: 'numeric',
+                                                year: 'numeric', 
+                                                month: 'long', 
+                                                hour: 'numeric',
+                                                minute: 'numeric', 
+                                                second: 'numeric',
+                                            }) %></time></small>
+                    </p>
+                </div>
+                <p><%= msg.elements[0].text %></p>
+                <div class="fixed-elem">
+                    <label for="<%- id %>" class="link">Raspunde</label>
+                    <input class="raspunde" id="<%- id %>" value="false" type="checkbox"/>
+                    <p style="padding-left: 5px; padding-right: 5px;">|</p>
+                    <label for="id-<%- i %>" class="link">Raspunsuri (<%- msg.elements.length - 1 %>)</label>
+                    <input class="raspunsuri" id="id-<%- i %>" value="false" type="checkbox"/>
+                </div>
+                <div class="grup-raspunsuri id-<%- i %> ascundere">
+                    <%
+                    let raspunsuri = msg.elements.slice(1);
+                    if(raspunsuri){
+                        let raspunsuriSort = raspunsuri.sort(function(a, b) {return (new Date(b.attributes.data)).getTime() - (new Date(a.attributes.data)).getTime()})
+                        for (let rasp of raspunsuriSort) {
+                            let dtr = new Date(rasp.attributes.data);
+                    %>
+                            <div class="mesaj-div">
+                                <div class="header-mesaj">
+                                    <% if(rasp.attributes.username != "anonim") {%>
+                                        <h4><a href="/utilizator/<%- rasp.attributes.username %>"><%= rasp.attributes.username%></a> raspunde:</h4>
+                                    <% } else { %>
+                                        <h4><span><%= rasp.attributes.username%></span> raspunde:</h4>
+                                    <% } %>
+                                    <p><small><time datetime="<%= dtr.getUTCDate() %>"><%= dtr.toLocaleString('ro-RO', {
+                                                                weekday: 'long', 
+                                                                day: 'numeric',
+                                                                year: 'numeric', 
+                                                                month: 'long', 
+                                                                hour: 'numeric',
+                                                                minute: 'numeric', 
+                                                                second: 'numeric',
+                                                            }) %></time></small>
+                                    </p>
+                                </div>
+                                <p><%= rasp.elements[0].text %></p>
+                            </div>
+                    <% } %>
+                    <% } %>
+                </div>
+                <div>
+                    <form class="raspuns <%- id %> ascundere" method="post" action="/forum/raspunde/<%- id %>">
+                        <label for="inp-mesaj <%- id %>">Raspunsul dumneavoastră:</label> <br>
+                        <textarea id="inp-mesaj <%- id %>" name="raspuns" placeholder="Mesaj"></textarea> <br>
+                        <input class="buton" type="submit" value="Trimite raspunsul!">
+                    </form>
+                </div>
+            </section>
+                <% } %>
+            <% } %>
+		</main>
+		
+		<%- include("../fragmente/footer") %>
+		
+	</body>
+</html>

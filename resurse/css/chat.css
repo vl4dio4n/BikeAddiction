@@ -1,0 +1,7 @@
+#mesaje-chat {
+	border: 1px solid var(--color6);
+	height: 200px;
+	overflow: auto;
+	width: 200px;
+	background-color: rgba(51, 49, 51, 0.15);
+}

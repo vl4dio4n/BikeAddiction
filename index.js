@@ -12,12 +12,17 @@ const path = require("path");
 
 const request = require("request");
 
+const xmljs = require("xml-js");
+
 const html_to_pdf = require("html-pdf-node");
 
 const juice = require("juice");
 const QRCode = require("qrcode");
 
 const mongodb = require("mongodb");
+
+const http = require("http");
+const socket = require("socket.io");
 
 var url = "mongodb://localhost:27017";
 
@@ -32,14 +37,8 @@ const obGlobal = {
 	sirAlphaNum: [],
 	clientMongo: mongodb.MongoClient,
 	bdMongo: null,
+	urlMongo: null,
 };
-
-obGlobal.clientMongo.connect(url, function (err, bd) {
-	if (err) console.log(err);
-	else {
-		obGlobal.bdMongo = bd.db("BikeAddiction");
-	}
-});
 
 async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []) {
 	var transp = nodemailer.createTransport({
@@ -69,6 +68,7 @@ async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente = []
 if (process.env.SITE_ONLINE) {
 	obGlobal.protocol = "https://";
 	obGlobal.numeDomeniu = "boiling-refuge-00098.herokuapp.com";
+	obGlobal.urlMongo = "mongodb+srv://vl4dio4n:Elena1973@cluster0.7qxqm.mongodb.net/?retryWrites=true&w=majority";
 	var client = new Client({
 		user: "xokygzdfvjrupd",
 		password: "ec1209476dd30ffc109c1b73c7ea39d86dc1565ac8a3858c82040235141c7f20",
@@ -82,6 +82,7 @@ if (process.env.SITE_ONLINE) {
 } else {
 	obGlobal.protocol = "http://";
 	obGlobal.numeDomeniu = "localhost:" + obGlobal.port;
+	obGlobal.urlMongo = "mongodb://localhost:27017";
 	var client = new Client({
 		user: "vl4dio4n",
 		password: "0000",
@@ -90,6 +91,13 @@ if (process.env.SITE_ONLINE) {
 		port: 5432,
 	});
 }
+
+obGlobal.clientMongo.connect(obGlobal.urlMongo, function (err, bd) {
+	if (err) console.log(err);
+	else {
+		obGlobal.bdMongo = bd.db("BikeAddiction");
+	}
+});
 
 client.connect();
 
@@ -101,7 +109,20 @@ for (let folder of foldere) {
 
 app = express();
 
-app.use(["/produse_cos", "/cumpara"], express.json({ limit: "2mb" }));
+const server = new http.createServer(app);
+var io = socket(server);
+io = io.listen(server); //asculta pe acelasi port ca si serverul
+
+io.on("connection", function (socket) {
+	console.log("Conectare!");
+	socket.on("disconnect", function () {
+		conexiune_index = null;
+		console.log("Deconectare");
+	});
+});
+
+app.use(["/produse_cos", "/cumpara", "/mesaj"], express.json({ limit: "2mb" }));
+app.use(["/forum"], express.urlencoded({ extended: true }));
 
 app.use(
 	session({
@@ -115,6 +136,7 @@ app.use(
 app.set("view engine", "ejs");
 
 app.use("/resurse", express.static(__dirname + "/resurse"));
+app.use("/socket.io", express.static(__dirname + "/socket.io"));
 
 app.use("/poze_uploadate", express.static(__dirname + "/poze_uploadate"));
 
@@ -128,6 +150,7 @@ app.use("/*", function (req, res, next) {
 	res.locals.categProduse = obGlobal.categProduse;
 	res.locals.utilizator = req.session.utilizator;
 	res.locals.mesajLogin = req.session.mesajLogin;
+	res.locals.port = s_port;
 	req.session.mesajLogin = null;
 
 	var cale_poza_mica;
@@ -377,7 +400,7 @@ app.post("/login", function (req, res) {
 							prenume: rezSelect.rows[0].prenume,
 							username: rezSelect.rows[0].username,
 							email: rezSelect.rows[0].email,
-							culoareChat: rezSelect.rows[0].culoareChat,
+							culoareChat: rezSelect.rows[0].culoare_chat,
 							rol: rezSelect.rows[0].rol,
 							problema_vedere: rezSelect.rows[0].problema_vedere,
 						};
@@ -889,6 +912,137 @@ app.post("/cumpara", function (req, res) {
 	});
 });
 
+/////////////////////////////////////////// Forum ///////////////////////////////////////////////////
+
+var caleXMLMesaje = "resurse/xml/forum.xml";
+var headerXML = `<?xml version="1.0" encoding="utf-8"?>`;
+function creeazaXMlForumDacaNuExista() {
+	if (!fs.existsSync(caleXMLMesaje)) {
+		let initXML = {
+			declaration: {
+				attributes: {
+					version: "1.0",
+					encoding: "utf-8",
+				},
+			},
+			elements: [
+				{
+					type: "element",
+					name: "forum",
+					elements: [
+						{
+							type: "element",
+							name: "mesaje",
+							elements: [],
+						},
+					],
+				},
+			],
+		};
+		let sirXml = xmljs.js2xml(initXML, { compact: false, spaces: 4 }); //obtin sirul xml (cu taguri)
+		console.log(sirXml);
+		fs.writeFileSync(caleXMLMesaje, sirXml);
+		return false; //l-a creat
+	}
+	return true; //nu l-a creat acum
+}
+
+function parseazaMesaje() {
+	let existaInainte = creeazaXMlForumDacaNuExista();
+	let mesajeXml = [];
+	let obJson;
+	if (existaInainte) {
+		let sirXML = fs.readFileSync(caleXMLMesaje, "utf8");
+		obJson = xmljs.xml2js(sirXML, { compact: false, spaces: 4 });
+
+		let elementMesaje = obJson.elements[0].elements.find(function (el) {
+			return el.name == "mesaje";
+		});
+		let vectElementeMesaj = elementMesaje.elements ? elementMesaje.elements : []; // conditie ? val_true: val_false
+		console.log(
+			"Mesaje: ",
+			obJson.elements[0].elements.find(function (el) {
+				return el.name == "mesaje";
+			})
+		);
+		let mesajeXml = vectElementeMesaj.filter(function (el) {
+			return el.name == "mesaj";
+		});
+		return [obJson, elementMesaje, mesajeXml];
+	}
+	return [obJson, [], []];
+}
+
+app.get("/forum", function (req, res) {
+	let obJson, elementMesaje, mesajeXml;
+	[obJson, elementMesaje, mesajeXml] = parseazaMesaje();
+
+	res.render("pagini/forum", { utilizator: req.session.utilizator, mesaje: mesajeXml });
+});
+
+app.post("/forum", function (req, res) {
+	let obJson, elementMesaje, mesajeXml;
+	[obJson, elementMesaje, mesajeXml] = parseazaMesaje();
+
+	let u = req.session.utilizator ? req.session.utilizator.username : "anonim";
+	let mesajNou = {
+		type: "element",
+		name: "mesaj",
+		attributes: {
+			username: u,
+			data: new Date(),
+		},
+		elements: [{ type: "text", text: req.body.mesaj }],
+	};
+	if (elementMesaje.elements) elementMesaje.elements.push(mesajNou);
+	else elementMesaje.elements = [mesajNou];
+	console.log("mf", elementMesaje.elements, "mf");
+	let sirXml = xmljs.js2xml(obJson, { compact: false, spaces: 4 });
+	console.log("XML: ", sirXml);
+	fs.writeFileSync("resurse/xml/forum.xml", sirXml);
+
+	res.render("pagini/forum", { utilizator: req.session.utilizator, mesaje: elementMesaje.elements });
+});
+
+app.post("/forum/raspunde/:id", function (req, res) {
+	let obJson, elementMesaje, mesajeXml;
+	[obJson, elementMesaje, mesajeXml] = parseazaMesaje();
+
+	let u = req.session.utilizator ? req.session.utilizator.username : "anonim";
+	let mesajNou = {
+		type: "element",
+		name: "raspuns",
+		attributes: {
+			username: u,
+			data: new Date(),
+		},
+		elements: [{ type: "text", text: req.body.raspuns }],
+	};
+	let userId = req.params.id.split("-")[0];
+	let dateId = getDateFromString(req.params.id);
+
+	for (let elem of elementMesaje.elements)
+		if (elem.attributes.username == userId && elem.attributes.data == dateId) {
+			if (elem.elements) elem.elements.push(mesajNou);
+			else elem.elements = [mesajNou];
+			break;
+		}
+	let sirXml = xmljs.js2xml(obJson, { compact: false, spaces: 4 });
+	console.log("XML: ", sirXml);
+	fs.writeFileSync("resurse/xml/forum.xml", sirXml);
+
+	res.render("pagini/forum", { utilizator: req.session.utilizator, mesaje: elementMesaje.elements });
+});
+
+////////////////////////////////////////////// Chat //////////////////////////////////////////////////
+
+app.post("/mesaj", function (req, res) {
+	console.log("primit mesaj");
+	console.log(req.body);
+	io.sockets.emit("mesaj_nou", req.body.nume, req.body.culoare, req.body.mesaj);
+	res.send("ok");
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/terms", function (req, res) {
@@ -926,6 +1080,16 @@ app.get("/*", function (req, res) {
 });
 
 /********************************************************************************************************************/
+function getDateFromString(strData) {
+	let day = parseInt(strData.split("-")[1]);
+	let month = parseInt(strData.split("-")[2]);
+	let year = parseInt(strData.split("-")[3]);
+	let hour = parseInt(strData.split("-")[4]);
+	let mins = parseInt(strData.split("-")[5]);
+	let secs = parseInt(strData.split("-")[6]);
+	return new Date(year, month, day, hour, mins, secs);
+}
+
 function getDate(data) {
 	let date = data ? data : new Date();
 	let day = ("0" + date.getDate()).slice(-2);
@@ -1116,6 +1280,7 @@ client.query("select id from produse", function (err, rez) {
 
 // app.listen(8080);
 var s_port = process.env.PORT || obGlobal.port;
-app.listen(s_port);
+// app.listen(s_port);
+server.listen(s_port);
 
 console.log("A pornit");
