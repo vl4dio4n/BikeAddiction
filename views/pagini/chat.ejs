@@ -5,7 +5,14 @@
 		<%- include("../fragmente/head") %>
 		<link rel="stylesheet" type="text/css" href="/resurse/css/chat.css" />
         <script type="text/javascript" src="/resurse/biblioteci/socket.io/client-dist/socket.io.js"></script> 
-        <script>port = "<%= port %>"</script>
+        <script>
+        let port = "<%= port %>"
+        let username = null;
+        </script>
+        <% if(locals.utilizator) %>
+        <script>
+            username = "<%= locals.utilizator.username %>"
+        </script> 
         <script src="/resurse/js/chat.js"></script>
 	</head>
 	<body class="container">
@@ -18,12 +25,16 @@
                 </div>
                 <% if(locals.utilizator) {
                     %> 
-                <p>Nume: <span id="nume"><%- locals.utilizator.username %></span></p>
-                <label for="mesaj">Mesaj:</label><br/>
-                <textarea id="mesaj" name="mesaj" value=""></textarea>
-                <p> Culoare: <span id="culoare"><%- locals.utilizator.culoareChat %></span></p>
-                <button onclick="trimite()">ok</button>
-                <% } %>    
+                <p style="display: none;">Nume: <span id="nume"><%- locals.utilizator.username %></span></p>
+
+                <div class="div-mesaj">
+                    <label for="mesaj">Mesaj:</label> <br>
+                    <textarea id="mesaj" name="mesaj" value=""></textarea> <br>
+                    <button class="buton" onclick="trimite()">Trimite</button>
+                </div>
+                <p style="display: none;"> Culoare: <span id="culoare"><%- locals.utilizator.culoareChat %></span></p>
+            
+                <% } %>   
             </section>
 		</main>
 		

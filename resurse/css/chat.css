@@ -1,7 +1,95 @@
 #mesaje-chat {
 	border: 1px solid var(--color6);
-	height: 200px;
+	height: 750px;
 	overflow: auto;
-	width: 200px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	background-color: var(--color4);
+	border-radius: 8px;
+}
+
+#mesaj {
+	width: 70%;
+	height: 150px;
+	border-radius: 10px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.div-mesaj {
+	width: 50%;
 	background-color: rgba(51, 49, 51, 0.15);
+	border: 2px solid var(--color6);
+	border-radius: 8px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.div-mesaj > button {
+	margin-bottom: 20px;
+}
+
+.div-mesaj {
+	padding-top: 20px;
+}
+
+.mesaj-chat {
+	width: 45%;
+	border: 2px solid var(--color6);
+	border-radius: 8px;
+	margin-left: var(--margine-section);
+	margin-top: 20px;
+	background-color: var(--color1);
+}
+
+.stanga {
+	float: left;
+	margin-right: 100%;
+}
+
+.dreapta {
+	float: right;
+	margin-right: var(--margine-section);
+	margin-left: 100%;
+}
+
+.mesaj-chat > p {
+	padding-left: 15px;
+}
+
+.autor-mesaj {
+	background-color: var(--culoare-marcaj);
+}
+
+.autor-mesaj > a {
+	text-decoration: none;
+	color: black;
+}
+
+.autor-mesaj > a:hover {
+	transition: all 0.1s linear;
+	color: var(--color6);
+}
+
+.buton {
+	width: auto;
+	height: 40px;
+	background-color: var(--color2);
+	color: var(--color6);
+	border-radius: 8px;
+	border: 1px solid var(--color6);
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.buton:hover {
+	transition: all 0.1s linear;
+	background-color: var(--color4);
 }
