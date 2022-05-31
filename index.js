@@ -877,62 +877,62 @@ app.post("/cumpara", function (req, res) {
 
 		let file = { content: juice(rezFactura, { inlinePseudoElements: true }) };
 		//////
-		let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
-		let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
+		// let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
+		// let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
 
-		trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml);
+		// trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml);
 
-		res.write("Totu bine!");
-		res.end();
-		// res.render("pagini/cos-virtual", { type: true, raspuns: "Procesul s-a incheiat cu succes" });
-		let factura = { data: new Date(), username: req.session.utilizator.username, produse: rez.rows };
-		obGlobal.bdMongo.collection("facturi").insertOne(factura, function (err, res) {
-			if (err) console.log(err);
-			else {
-				console.log("Am inserat factura in mongodb");
-				//doar de debug:
-				obGlobal.bdMongo
-					.collection("facturi")
-					.find({})
-					.toArray(function (err, result) {
-						if (err) console.log(err);
-						else console.log(result);
-					});
-			}
-		});
-
-		// html_to_pdf.generatePdf(file, options).then(function (pdf) {
-		// 	if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
-		// 	var numefis = "./temp/test" + new Date().getTime() + ".pdf";
-		// 	fs.writeFileSync(numefis, pdf);
-		// 	let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
-		// 	let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
-
-		// 	trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml, [
-		// 		{
-		// 			filename: "factura.pdf",
-		// 			content: fs.readFileSync(numefis),
-		// 		},
-		// 	]);
-		// 	res.write("Totu bine!");
-		// 	res.end();
-		// 	// res.render("pagini/cos-virtual", { type: true, raspuns: "Procesul s-a incheiat cu succes" });
-		// 	let factura = { data: new Date(), username: req.session.utilizator.username, produse: rez.rows };
-		// 	obGlobal.bdMongo.collection("facturi").insertOne(factura, function (err, res) {
-		// 		if (err) console.log(err);
-		// 		else {
-		// 			console.log("Am inserat factura in mongodb");
-		// 			//doar de debug:
-		// 			obGlobal.bdMongo
-		// 				.collection("facturi")
-		// 				.find({})
-		// 				.toArray(function (err, result) {
-		// 					if (err) console.log(err);
-		// 					else console.log(result);
-		// 				});
-		// 		}
-		// 	});
+		// res.write("Totu bine!");
+		// res.end();
+		// // res.render("pagini/cos-virtual", { type: true, raspuns: "Procesul s-a incheiat cu succes" });
+		// let factura = { data: new Date(), username: req.session.utilizator.username, produse: rez.rows };
+		// obGlobal.bdMongo.collection("facturi").insertOne(factura, function (err, res) {
+		// 	if (err) console.log(err);
+		// 	else {
+		// 		console.log("Am inserat factura in mongodb");
+		// 		//doar de debug:
+		// 		obGlobal.bdMongo
+		// 			.collection("facturi")
+		// 			.find({})
+		// 			.toArray(function (err, result) {
+		// 				if (err) console.log(err);
+		// 				else console.log(result);
+		// 			});
+		// 	}
 		// });
+
+		html_to_pdf.generatePdf(file, options).then(function (pdf) {
+			if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
+			var numefis = "./temp/test" + new Date().getTime() + ".pdf";
+			fs.writeFileSync(numefis, pdf);
+			let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
+			let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
+
+			trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml, [
+				{
+					filename: "factura.pdf",
+					content: fs.readFileSync(numefis),
+				},
+			]);
+			res.write("Totu bine!");
+			res.end();
+			// res.render("pagini/cos-virtual", { type: true, raspuns: "Procesul s-a incheiat cu succes" });
+			let factura = { data: new Date(), username: req.session.utilizator.username, produse: rez.rows };
+			obGlobal.bdMongo.collection("facturi").insertOne(factura, function (err, res) {
+				if (err) console.log(err);
+				else {
+					console.log("Am inserat factura in mongodb");
+					//doar de debug:
+					obGlobal.bdMongo
+						.collection("facturi")
+						.find({})
+						.toArray(function (err, result) {
+							if (err) console.log(err);
+							else console.log(result);
+						});
+				}
+			});
+		});
 	});
 });
 
