@@ -880,12 +880,7 @@ app.post("/cumpara", function (req, res) {
 		let mText = `Stimate ${req.session.utilizator.username}, aveți atașată factura.`;
 		let mHtml = `<h1>Salut!</h1><p>${mText}</p>`;
 
-		trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml, [
-			{
-				filename: "factura.pdf",
-				content: fs.readFileSync(numefis),
-			},
-		]);
+		trimiteMail(req.session.utilizator.email, "Factura", mText, mHtml);
 
 		res.write("Totu bine!");
 		res.end();
